@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import { GetStaticProps } from 'next'
 import { InferGetStaticPropsType } from 'next'
+import { Auth } from 'googleapis'
 
 const fs = require("fs").promises;
 const path = require("path");
@@ -40,7 +41,7 @@ async function loadSavedCredentialsIfExist() {
  * @param {OAuth2Client} client
  * @return {Promise<void>}
  */
-async function saveCredentials(client) {
+async function saveCredentials(client: Auth.OAuth2Client) {
   const content = await fs.readFile(CREDENTIALS_PATH);
   const keys = JSON.parse(content);
   const key = keys.installed || keys.web;
@@ -77,8 +78,13 @@ async function authorize() {
  * @param {OAuth2Client} authClient An authorized OAuth2 client.
  */
 
+type FileType = {
+  name: string,
+  id: string
+}
+
 const folderId = '13pCo-sN-A5EVKYkEFi6MquPJwUyGUCdY';
-async function getImageUrls(authClient) {
+async function getImageUrls(authClient: Auth.OAuth2Client) {
   const drive = google.drive({ version: "v3", auth: authClient });
   const res = await drive.files.list({
     q: `'${folderId}' in parents and trashed = false`,
@@ -91,11 +97,7 @@ async function getImageUrls(authClient) {
     return;
   }
 
-  console.log("Files:");
-  files.map((file) => {
-    console.log(`${file.name} (${file.id}) - ${file.webViewLink}`);
-  });
-  const imageIds = files.map(file => file.id);
+  const imageIds = files.map((file: FileType) => file.id);
   return imageIds;
 }
 
