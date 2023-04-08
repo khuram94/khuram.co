@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 const Header: React.FC = () => {
@@ -5,9 +6,9 @@ const Header: React.FC = () => {
     <header>
       <nav>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/portfolio/experience">Professional Experience</a></li>
-          <li><a href="/portfolio/contact">Contact</a></li>
+          <li><Link href="/">Home</Link></li>
+          <li><Link href="/portfolio/experience">Professional Experience</Link></li>
+          <li><Link href="/portfolio/contact">Contact</Link></li>
         </ul>
       </nav>
     </header>
