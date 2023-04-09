@@ -3,6 +3,7 @@ const path = require("path");
 const process = require("process");
 const { authenticate } = require("@google-cloud/local-auth");
 const { google } = require("googleapis");
+import { Auth } from 'googleapis'
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"];
@@ -10,7 +11,7 @@ const SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"];
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH = path.join(process.cwd(), "token.json");
-const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json");
+const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.js");
 
 /**
  * Reads previously authorized credentials from the save file.
@@ -33,7 +34,7 @@ async function loadSavedCredentialsIfExist() {
  * @param {OAuth2Client} client
  * @return {Promise<void>}
  */
-async function saveCredentials(client) {
+async function saveCredentials(client: Auth.OAuth2Client) {
   const content = await fs.readFile(CREDENTIALS_PATH);
   const keys = JSON.parse(content);
   const key = keys.installed || keys.web;
@@ -50,7 +51,7 @@ async function saveCredentials(client) {
  * Load or request or authorization to call APIs.
  *
  */
-async function authorize() {
+export async function authorize() {
   let client = await loadSavedCredentialsIfExist();
   if (client) {
     return client;
@@ -69,11 +70,20 @@ async function authorize() {
  * Lists the names and IDs of up to 10 files.
  * @param {OAuth2Client} authClient An authorized OAuth2 client.
  */
-async function listFiles(authClient) {
+
+type FileType = {
+  name: string,
+  id: string,
+};
+
+const folderId = "13pCo-sN-A5EVKYkEFi6MquPJwUyGUCdY";
+
+export async function getImageUrls(authClient: Auth.OAuth2Client) {
   const drive = google.drive({ version: "v3", auth: authClient });
   const res = await drive.files.list({
+    q: `'${folderId}' in parents and trashed = false`,
     pageSize: 10,
-    fields: "nextPageToken, files(id, name)",
+    fields: "nextPageToken, files(id, name, webViewLink)",
   });
   const files = res.data.files;
   if (files.length === 0) {
@@ -81,10 +91,6 @@ async function listFiles(authClient) {
     return;
   }
 
-  console.log("Files:");
-  files.map((file) => {
-    console.log(`${file.name} (${file.id})`);
-  });
+  const imageIds = files.map((file: FileType) => file.id);
+  return imageIds;
 }
-
-authorize().then(listFiles).catch(console.error);
