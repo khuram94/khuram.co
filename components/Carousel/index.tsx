@@ -21,7 +21,8 @@ export const Carousel = ({ items }: { items: TItem }) => {
   const [boundaries, setBoundaries] = useState<number[]>([]);
   const [position, setPosition] = useState(0);
   const [activeItem, setActiveItem] = useState(0);
-  const [previous, setPrevious] = useState(0);
+
+  const zoomScale = [250, 300, 350, 300, 250];
 
   console.log({ activeItem });
 
@@ -59,7 +60,7 @@ export const Carousel = ({ items }: { items: TItem }) => {
     // Map x from these values:
     scales[activeItem],
     // Into these values:
-    [200, 300, 350, 300, 200]
+    zoomScale
   );
 
   const getLeftScale = () =>
@@ -68,18 +69,24 @@ export const Carousel = ({ items }: { items: TItem }) => {
   const getLeftScale2 = () =>
     activeItem > 1 ? scales[activeItem - 2] : [0, 0, 0, 0, 0];
 
+  const getLeftScale3 = () =>
+    activeItem > 2 ? scales[activeItem - 3] : [0, 0, 0, 0, 0];
+
   const getRightScale = () =>
     activeItem < items.length - 1 ? scales[activeItem + 1] : [0, 0, 0, 0, 0];
 
   const getRightScale2 = () =>
     activeItem < items.length - 2 ? scales[activeItem + 2] : [0, 0, 0, 0, 0];
 
+  const getRightScale3 = () =>
+    activeItem < items.length - 3 ? scales[activeItem + 3] : [0, 0, 0, 0, 0];
+
   const leftCard = useTransform(
     x,
     // Map x from these values:
     getLeftScale(),
     // Into these values:
-    [200, 300, 350, 300, 200]
+    zoomScale
   );
 
   const rightCard = useTransform(
@@ -87,7 +94,7 @@ export const Carousel = ({ items }: { items: TItem }) => {
     // Map x from these values:
     getRightScale(),
     // Into these values:
-    [200, 300, 350, 300, 200]
+    zoomScale
   );
 
   const leftCard2 = useTransform(
@@ -95,7 +102,7 @@ export const Carousel = ({ items }: { items: TItem }) => {
     // Map x from these values:
     getLeftScale2(),
     // Into these values:
-    [200, 300, 350, 300, 200]
+    zoomScale
   );
 
   const rightCard2 = useTransform(
@@ -103,15 +110,31 @@ export const Carousel = ({ items }: { items: TItem }) => {
     // Map x from these values:
     getRightScale2(),
     // Into these values:
-    [200, 300, 350, 300, 200]
+    zoomScale
   );
 
-  const marginRight = useTransform(
+  const leftCard3 = useTransform(
+    x,
+    // Map x from these values:
+    getLeftScale3(),
+    // Into these values:
+    zoomScale
+  );
+
+  const rightCard3 = useTransform(
+    x,
+    // Map x from these values:
+    getRightScale3(),
+    // Into these values:
+    zoomScale
+  );
+
+  const margin = useTransform(
     x,
     // Map x from these values:
     scales[activeItem],
     // Into these values:
-    [50, 100, 150, 100, 50]
+    [25, 50, 150, 50, 25]
   );
 
   useMotionValueEvent(x, "change", (point) => {
@@ -130,6 +153,11 @@ export const Carousel = ({ items }: { items: TItem }) => {
       itemRef.current[activeItem - 2].style.height = `${leftCard2.get()}px`;
     }
 
+    if (activeItem > 2) {
+      itemRef.current[activeItem - 3].style.width = `${leftCard3.get()}px`;
+      itemRef.current[activeItem - 3].style.height = `${leftCard3.get()}px`;
+    }
+
     if (activeItem < items.length - 1) {
       itemRef.current[activeItem + 1].style.width = `${rightCard.get()}px`;
       itemRef.current[activeItem + 1].style.height = `${rightCard.get()}px`;
@@ -140,19 +168,10 @@ export const Carousel = ({ items }: { items: TItem }) => {
       itemRef.current[activeItem + 2].style.height = `${rightCard2.get()}px`;
     }
 
-    // if (activeItem < items.length - 1) {
-    // itemRef.current[activeItem + 1].style.width = `${cardSize.get()}px`;
-    // itemRef.current[activeItem + 1].style.height = `${cardSize.get()}px`;
-    // }
-
-    // cardControls?.start({
-    //   height: `${cardSize.get()}px`,
-    //   width: `${cardSize.get()}px`,
-    // });
-    // cardControls?.[activeItem + 1].start({
-    //   height: `${cardSize.get()}px`,
-    //   width: `${cardSize.get()}px`,
-    // });
+    if (activeItem < items.length - 3) {
+      itemRef.current[activeItem + 3].style.width = `${rightCard3.get()}px`;
+      itemRef.current[activeItem + 3].style.height = `${rightCard3.get()}px`;
+    }
   });
 
   return (
