@@ -34,6 +34,11 @@ const items = [
     alt: "K's Cuisine. Or a recipe for disaster.",
     colourScheme: "#DC1A21",
   },
+  {
+    imgPath: "/cooking-logo.png",
+    alt: "K's Cuisine. Or a recipe for disaster.",
+    colourScheme: "#DC1A21",
+  },
 ];
 
 export default function Home({

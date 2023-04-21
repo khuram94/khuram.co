@@ -12,24 +12,48 @@ import Image from "next/image";
 
 type TItem = [{ imgPath: string; alt: string; colourScheme: string }];
 
-export const Carousel = ({ items }: { items: TItem }) => {
+type TCarouselProps = {
+  items: TItem;
+  width: number;
+  height: number;
+  margin: number;
+};
+
+export const Carousel = ({
+  items,
+  width = 300,
+  height,
+  margin = 75,
+}: TCarouselProps) => {
   const itemRef = useRef<Array<HTMLDivElement>>([]);
   const controls = useAnimation();
   const cardControls = useAnimation();
   const x = useMotionValue(0);
 
   const [boundaries, setBoundaries] = useState<number[]>([]);
+  const [range, setRange] = useState<Array<number>>([]);
   const [position, setPosition] = useState(0);
   const [activeItem, setActiveItem] = useState(0);
+  const lCardWidth = width * 1.2;
+  const xsCardWidth = width * 0.7;
 
-  const zoomScale = [250, 300, 350, 300, 250];
+  const cardSizes = [xsCardWidth, width, lCardWidth, width, xsCardWidth];
+  const cardSpace = width + margin * 2;
 
-  console.log({ activeItem });
+  const makeNegative = (array: number[]) => array.map((x) => x * -1);
 
   useEffect(() => {
-    setBoundaries(
-      items.map((_, i) => ((itemRef.current?.[i].clientWidth || 0) + 150) * i)
+    const bounds = items.map(
+      (_, i) => ((itemRef.current?.[i].clientWidth || 0) + margin * 2) * i
     );
+
+    const range: number[] = [cardSpace * 2, cardSpace, ...makeNegative(bounds)];
+    const lastItemRange: number = range[range.length - 1];
+    range.push(lastItemRange - cardSpace);
+    range.push(lastItemRange - cardSpace * 2);
+    console.log({ range });
+    setRange(range);
+    setBoundaries(bounds);
   }, []);
 
   const dragEnd = (_: any, info: PanInfo) => {
@@ -48,96 +72,73 @@ export const Carousel = ({ items }: { items: TItem }) => {
     setActiveItem(boundaries.indexOf(closestPosition));
   };
 
-  const scales = [
-    [900, 450, 0, -450, -900],
-    [450, 0, -450, -900, -1350],
-    [0, -450, -900, -1350, -1800],
-    [-450, -900, -1350, -1800, -2250],
-  ];
+  const getRange = (from: number) => {
+    const values = range.slice(from, from + 5);
+    return values.length === 5 ? values : [0, 0, 0, 0, 0];
+  };
 
   const cardSize = useTransform(
     x,
     // Map x from these values:
-    scales[activeItem],
+    getRange(activeItem),
     // Into these values:
-    zoomScale
+    cardSizes
   );
-
-  const getLeftScale = () =>
-    activeItem > 0 ? scales[activeItem - 1] : [0, 0, 0, 0, 0];
-
-  const getLeftScale2 = () =>
-    activeItem > 1 ? scales[activeItem - 2] : [0, 0, 0, 0, 0];
-
-  const getLeftScale3 = () =>
-    activeItem > 2 ? scales[activeItem - 3] : [0, 0, 0, 0, 0];
-
-  const getRightScale = () =>
-    activeItem < items.length - 1 ? scales[activeItem + 1] : [0, 0, 0, 0, 0];
-
-  const getRightScale2 = () =>
-    activeItem < items.length - 2 ? scales[activeItem + 2] : [0, 0, 0, 0, 0];
-
-  const getRightScale3 = () =>
-    activeItem < items.length - 3 ? scales[activeItem + 3] : [0, 0, 0, 0, 0];
 
   const leftCard = useTransform(
     x,
     // Map x from these values:
-    getLeftScale(),
+    getRange(activeItem - 1),
     // Into these values:
-    zoomScale
+    cardSizes
   );
 
   const rightCard = useTransform(
     x,
     // Map x from these values:
-    getRightScale(),
+    getRange(activeItem + 1),
     // Into these values:
-    zoomScale
+    cardSizes
   );
 
   const leftCard2 = useTransform(
     x,
     // Map x from these values:
-    getLeftScale2(),
+    getRange(activeItem - 2),
     // Into these values:
-    zoomScale
+    cardSizes
   );
 
   const rightCard2 = useTransform(
     x,
     // Map x from these values:
-    getRightScale2(),
+    getRange(activeItem + 2),
     // Into these values:
-    zoomScale
+    cardSizes
   );
 
   const leftCard3 = useTransform(
     x,
     // Map x from these values:
-    getLeftScale3(),
+    getRange(activeItem - 3),
     // Into these values:
-    zoomScale
+    cardSizes
   );
 
   const rightCard3 = useTransform(
     x,
     // Map x from these values:
-    getRightScale3(),
+    getRange(activeItem + 3),
     // Into these values:
-    zoomScale
-  );
-
-  const margin = useTransform(
-    x,
-    // Map x from these values:
-    scales[activeItem],
-    // Into these values:
-    [25, 50, 150, 50, 25]
+    cardSizes
   );
 
   useMotionValueEvent(x, "change", (point) => {
+    // itemRef.current.forEach((item) => {
+    //   item.style.width = `${cardSize.get()}px`;
+    //   item.style.height = `${cardSize.get()}px`;
+    // });
+
     itemRef.current[activeItem].style.width = `${cardSize.get()}px`;
     itemRef.current[activeItem].style.height = `${cardSize.get()}px`;
 
