@@ -13,37 +13,54 @@ import { Carousel } from "@/components/Carousel";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const items = [
-  {
-    imgPath: "/dev-logo.png",
-    alt: "Dev stuff. Find out what I can do.",
-    colourScheme: "#44CBB2",
-  },
-  {
-    imgPath: "/playlists-logo.png",
-    alt: "Playlists. All the vibes.",
-    colourScheme: "#F4D502",
-  },
-  {
-    imgPath: "/photography-logo.png",
-    alt: "Lights. Camera. Action. Take a look through my lens.",
-    colourScheme: "#EFEFEF",
-  },
-  {
-    imgPath: "/cooking-logo.png",
-    alt: "K's Cuisine. Or a recipe for disaster.",
-    colourScheme: "#DC1A21",
-  },
-  {
-    imgPath: "/cooking-logo.png",
-    alt: "K's Cuisine. Or a recipe for disaster.",
-    colourScheme: "#DC1A21",
-  },
-];
+// const items = [
+//   {
+//     imgPath: "/dev-logo.png",
+//     alt: "Dev stuff. Find out what I can do.",
+//     colourScheme: "#44CBB2",
+//   },
+//   {
+//     imgPath: "/playlists-logo.png",
+//     alt: "Playlists. All the vibes.",
+//     colourScheme: "#F4D502",
+//   },
+//   {
+//     imgPath: "/photography-logo.png",
+//     alt: "Lights. Camera. Action. Take a look through my lens.",
+//     colourScheme: "#EFEFEF",
+//   },
+//   {
+//     imgPath: "/cooking-logo.png",
+//     alt: "K's Cuisine. Or a recipe for disaster.",
+//     colourScheme: "#DC1A21",
+//   },
+//   {
+//     imgPath: "/cooking-logo.png",
+//     alt: "K's Cuisine. Or a recipe for disaster.",
+//     colourScheme: "#DC1A21",
+//   },
+//   {
+//     imgPath: "/dev-logo.png",
+//     alt: "Dev stuff. Find out what I can do.",
+//     colourScheme: "#44CBB2",
+//   },
+//   {
+//     imgPath: "/playlists-logo.png",
+//     alt: "Playlists. All the vibes.",
+//     colourScheme: "#F4D502",
+//   },
+// ];
 
 export default function Home({
   imageIds,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const items = [
+    { imgPath: imageIds[0] },
+    { imgPath: imageIds[0] },
+    { imgPath: imageIds[0] },
+    { imgPath: imageIds[0] },
+    { imgPath: imageIds[0] },
+  ];
   return (
     <>
       <Head>
@@ -86,10 +103,10 @@ export default function Home({
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  // const imageIds = await authorize()
-  //   .then(async (authClient) => await getImageUrls(authClient))
-  //   .catch(console.error);
+  const imageIds = await authorize()
+    .then(async (authClient) => await getImageUrls(authClient))
+    .catch(console.error);
   return {
-    props: { imageIds: [] },
+    props: { imageIds },
   };
 };

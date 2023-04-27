@@ -14,37 +14,28 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 400px;
-  width: 300px;
-  margin: 0 75px;
-  border-radius: 3rem;
+  border-radius: 1.8rem;
+  contain: content;
 }
 
 .item img {
+  height: 75%;
   width: 100%;
-  height: 100%;
   pointer-events: none;
 }
 
 .inner-carousel {
   display: flex;
-  height: 200px;
-  margin-left: calc(50% - 225px);
+  height: 400px;
+  margin-left: calc(50% - 235px);
   align-items: center;
-  /* background-color: lightgreen; */
-  /* opacity: 50%; */
 }
 
 .carousel {
   display: flex;
   cursor: grab;
-  /* background-color: pink; */
 }
 
-.carousel-img {
-  width: 100%;
-  height: 100%;
-}
 
 .heading {
   font-size: 3rem;
@@ -52,6 +43,4 @@ body {
   font-family: 'Roboto', sans-serif;
   position:absolute;
   text-align: center;
-
-
 }

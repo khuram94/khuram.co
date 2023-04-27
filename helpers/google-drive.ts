@@ -3,7 +3,7 @@ const path = require("path");
 const process = require("process");
 const { authenticate } = require("@google-cloud/local-auth");
 const { google } = require("googleapis");
-import { Auth } from 'googleapis'
+import { Auth } from "googleapis";
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"];
@@ -20,10 +20,13 @@ const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.js");
  */
 async function loadSavedCredentialsIfExist() {
   try {
+    console.log("hello");
     const content = await fs.readFile(TOKEN_PATH);
+    console.log({ content });
     const credentials = JSON.parse(content);
     return google.auth.fromJSON(credentials);
   } catch (err) {
+    console.log({ err });
     return null;
   }
 }
@@ -54,13 +57,17 @@ async function saveCredentials(client: Auth.OAuth2Client) {
 export async function authorize() {
   let client = await loadSavedCredentialsIfExist();
   if (client) {
+    console.log("have client");
     return client;
   }
+  console.log("ok");
   client = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
   });
+  console.log("set client");
   if (client.credentials) {
+    console.log("client credentials");
     await saveCredentials(client);
   }
   return client;
@@ -72,8 +79,8 @@ export async function authorize() {
  */
 
 type FileType = {
-  name: string,
-  id: string,
+  name: string;
+  id: string;
 };
 
 const folderId = "13pCo-sN-A5EVKYkEFi6MquPJwUyGUCdY";

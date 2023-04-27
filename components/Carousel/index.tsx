@@ -21,37 +21,58 @@ type TCarouselProps = {
 
 export const Carousel = ({
   items,
-  width = 300,
-  height,
+  width = 320,
+  height = 450,
   margin = 75,
 }: TCarouselProps) => {
   const itemRef = useRef<Array<HTMLDivElement>>([]);
   const controls = useAnimation();
-  const cardControls = useAnimation();
   const x = useMotionValue(0);
 
   const [boundaries, setBoundaries] = useState<number[]>([]);
   const [range, setRange] = useState<Array<number>>([]);
   const [position, setPosition] = useState(0);
-  const [activeItem, setActiveItem] = useState(0);
-  const lCardWidth = width * 1.2;
-  const xsCardWidth = width * 0.7;
 
-  const cardSizes = [xsCardWidth, width, lCardWidth, width, xsCardWidth];
+  const sWidth = width * 0.75;
+  const xsWidth = width * 0.5;
+  const sHeight = height * 0.75;
+  const xsHeight = height * 0.5;
+
+  const cardWidths = [xsWidth, sWidth, width, sWidth, xsWidth];
+  const cardHeights = [xsHeight, sHeight, height, sHeight, xsHeight];
   const cardSpace = width + margin * 2;
 
   const makeNegative = (array: number[]) => array.map((x) => x * -1);
 
-  useEffect(() => {
-    const bounds = items.map(
-      (_, i) => ((itemRef.current?.[i].clientWidth || 0) + margin * 2) * i
-    );
-
+  const makeRange = (bounds: number[]) => {
     const range: number[] = [cardSpace * 2, cardSpace, ...makeNegative(bounds)];
     const lastItemRange: number = range[range.length - 1];
     range.push(lastItemRange - cardSpace);
     range.push(lastItemRange - cardSpace * 2);
-    console.log({ range });
+    return range;
+  };
+
+  const initialsizes = [sWidth, xsWidth, xsWidth, xsWidth, xsWidth, xsWidth];
+
+  useEffect(() => {
+    // const bounds = items.map(
+    //   (_, i) =>
+    //     console.log("item ", i, ": ", itemRef.current?.[i].clientWidth) ||
+    //     (240 + margin * 2) * i
+    // );
+
+    const bounds = initialsizes.reduce(
+      (pV, cV, cI) => {
+        const bound = initialsizes[cI] + margin * 2 + pV[pV.length - 1];
+        pV.push(bound);
+        return pV;
+      },
+      [0]
+    );
+
+    console.log({ bounds });
+
+    const range = makeRange(bounds);
     setRange(range);
     setBoundaries(bounds);
   }, []);
@@ -69,111 +90,7 @@ export const Carousel = ({
     });
 
     setPosition(closestPosition);
-    setActiveItem(boundaries.indexOf(closestPosition));
   };
-
-  const getRange = (from: number) => {
-    const values = range.slice(from, from + 5);
-    return values.length === 5 ? values : [0, 0, 0, 0, 0];
-  };
-
-  const cardSize = useTransform(
-    x,
-    // Map x from these values:
-    getRange(activeItem),
-    // Into these values:
-    cardSizes
-  );
-
-  const leftCard = useTransform(
-    x,
-    // Map x from these values:
-    getRange(activeItem - 1),
-    // Into these values:
-    cardSizes
-  );
-
-  const rightCard = useTransform(
-    x,
-    // Map x from these values:
-    getRange(activeItem + 1),
-    // Into these values:
-    cardSizes
-  );
-
-  const leftCard2 = useTransform(
-    x,
-    // Map x from these values:
-    getRange(activeItem - 2),
-    // Into these values:
-    cardSizes
-  );
-
-  const rightCard2 = useTransform(
-    x,
-    // Map x from these values:
-    getRange(activeItem + 2),
-    // Into these values:
-    cardSizes
-  );
-
-  const leftCard3 = useTransform(
-    x,
-    // Map x from these values:
-    getRange(activeItem - 3),
-    // Into these values:
-    cardSizes
-  );
-
-  const rightCard3 = useTransform(
-    x,
-    // Map x from these values:
-    getRange(activeItem + 3),
-    // Into these values:
-    cardSizes
-  );
-
-  useMotionValueEvent(x, "change", (point) => {
-    // itemRef.current.forEach((item) => {
-    //   item.style.width = `${cardSize.get()}px`;
-    //   item.style.height = `${cardSize.get()}px`;
-    // });
-
-    itemRef.current[activeItem].style.width = `${cardSize.get()}px`;
-    itemRef.current[activeItem].style.height = `${cardSize.get()}px`;
-
-    // itemRef.current[activeItem].style.marginRight = `${marginRight.get()}px`;
-
-    if (activeItem > 0) {
-      itemRef.current[activeItem - 1].style.width = `${leftCard.get()}px`;
-      itemRef.current[activeItem - 1].style.height = `${leftCard.get()}px`;
-    }
-
-    if (activeItem > 1) {
-      itemRef.current[activeItem - 2].style.width = `${leftCard2.get()}px`;
-      itemRef.current[activeItem - 2].style.height = `${leftCard2.get()}px`;
-    }
-
-    if (activeItem > 2) {
-      itemRef.current[activeItem - 3].style.width = `${leftCard3.get()}px`;
-      itemRef.current[activeItem - 3].style.height = `${leftCard3.get()}px`;
-    }
-
-    if (activeItem < items.length - 1) {
-      itemRef.current[activeItem + 1].style.width = `${rightCard.get()}px`;
-      itemRef.current[activeItem + 1].style.height = `${rightCard.get()}px`;
-    }
-
-    if (activeItem < items.length - 2) {
-      itemRef.current[activeItem + 2].style.width = `${rightCard2.get()}px`;
-      itemRef.current[activeItem + 2].style.height = `${rightCard2.get()}px`;
-    }
-
-    if (activeItem < items.length - 3) {
-      itemRef.current[activeItem + 3].style.width = `${rightCard3.get()}px`;
-      itemRef.current[activeItem + 3].style.height = `${rightCard3.get()}px`;
-    }
-  });
 
   return (
     <motion.div className="carousel">
@@ -187,26 +104,71 @@ export const Carousel = ({
         style={{ x }}
       >
         {items.map((item, i) => (
-          <div className="item">
-            <motion.div
-              key={i}
-              ref={(el) => el && (itemRef.current[i] = el)}
-              style={{ background: item.colourScheme }}
-              animate={cardControls}
-            >
-              <Image
-                loading="eager"
-                src={item.imgPath}
-                alt={item.alt}
-                style={{ position: "relative" }}
-                width={350}
-                height={350}
-              />
-              {/* {i} */}
-            </motion.div>
-          </div>
+          <Item
+            itemRef={itemRef}
+            itemNo={i}
+            item={item}
+            margin={margin}
+            cardWidths={cardWidths}
+            cardHeights={cardHeights}
+            range={range}
+            x={x}
+          />
         ))}
       </motion.div>
+    </motion.div>
+  );
+};
+
+export const Item = ({
+  itemRef,
+  itemNo,
+  item,
+  margin,
+  cardWidths,
+  cardHeights,
+  range,
+  x,
+}) => {
+  const getRange = () => {
+    const values = range.slice(itemNo, itemNo + 5);
+    return values.length === 5 ? values : [0, 0, 0, 0, 0];
+  };
+
+  const width = useTransform(x, getRange(), cardWidths);
+  const height = useTransform(x, getRange(), cardHeights);
+
+  // useMotionValueEvent(x, "change", () => {
+  //   itemRef.current[itemNo].style.width = `${width.get()}px`;
+  //   // itemRef.current[itemNo].style.height = `${cardHeight.get()}px`;
+  // });
+
+  // style={{backgroundImage: `url(https://drive.google.com/uc?export=view&id=${imageIds[0]})`, backgroundSize: '100%'}}
+  return (
+    <motion.div
+      className="item"
+      style={{
+        width,
+        height,
+        margin,
+        background: item.colourScheme,
+        display: range.length === 0 ? "none" : "",
+      }}
+      key={itemNo}
+      ref={(el) => el && (itemRef.current[itemNo] = el)}
+    >
+      <Image
+        loading="eager"
+        src={`url(https://drive.google.com/uc?export=view&id=${item.imgPath})`}
+        style={{
+          backgroundImage: `url(https://drive.google.com/uc?export=view&id=${item.imgPath})`,
+        }}
+        alt={item.alt}
+        // style={{ position: "relative" }}
+        width={350}
+        height={350}
+      />
+      {/* {i} */}
     </motion.div>
   );
 };

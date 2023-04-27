@@ -1,4 +1,4 @@
-export default {
+const credentials = {
   installed: {
     client_id: process.env.GOOGLE_API_CLIENT_ID,
     project_id: process.env.GOOGLE_API_PROJECT_ID,
