@@ -5,7 +5,6 @@ import {
   useTransform,
   useAnimation,
   useMotionValue,
-  useMotionValueEvent,
 } from "framer-motion";
 
 import Image from "next/image";
@@ -22,7 +21,7 @@ type TCarouselProps = {
 export const Carousel = ({
   items,
   width = 320,
-  height = 450,
+  height = 550,
   margin = 75,
 }: TCarouselProps) => {
   const itemRef = useRef<Array<HTMLDivElement>>([]);
@@ -31,7 +30,7 @@ export const Carousel = ({
 
   const [boundaries, setBoundaries] = useState<number[]>([]);
   const [range, setRange] = useState<Array<number>>([]);
-  const [position, setPosition] = useState(0);
+  const [activeItem, setActiveItem] = useState(0);
 
   const sWidth = width * 0.75;
   const xsWidth = width * 0.5;
@@ -52,7 +51,7 @@ export const Carousel = ({
     return range;
   };
 
-  const initialsizes = [sWidth, xsWidth, xsWidth, xsWidth, xsWidth, xsWidth];
+  const initialsizes = [sWidth, xsWidth];
 
   useEffect(() => {
     // const bounds = items.map(
@@ -78,7 +77,7 @@ export const Carousel = ({
   }, []);
 
   const dragEnd = (_: any, info: PanInfo) => {
-    const endPosition = position - info.offset.x;
+    const endPosition = boundaries[activeItem] - info.offset.x;
 
     const closestPosition = boundaries?.reduce((prev: any, curr: any) =>
       Math.abs(curr - endPosition) < Math.abs(prev - endPosition) ? curr : prev
@@ -89,34 +88,77 @@ export const Carousel = ({
       transition: { type: "tween", duration: 0.5, velocity: 10 },
     });
 
-    setPosition(closestPosition);
+    setActiveItem(boundaries.indexOf(closestPosition));
   };
 
+  // on tab selection
+  useEffect(() => {
+    controls.start({
+      x: -boundaries[activeItem],
+      transition: { type: "tween", duration: 0.5, velocity: 10 },
+    });
+  }, [activeItem]);
+
   return (
-    <motion.div className="carousel">
-      <motion.div
-        className="inner-carousel"
-        drag="x"
-        dragConstraints={{ right: 0, left: -boundaries[boundaries.length - 1] }}
-        whileDrag={{ cursor: "grabbing" }}
-        onDragEnd={dragEnd}
-        animate={controls}
-        style={{ x }}
-      >
-        {items.map((item, i) => (
-          <Item
-            itemRef={itemRef}
-            itemNo={i}
-            item={item}
-            margin={margin}
-            cardWidths={cardWidths}
-            cardHeights={cardHeights}
-            range={range}
-            x={x}
-          />
-        ))}
+    <div style={{ width: "100%" }}>
+      <motion.div className="carousel">
+        <motion.div
+          className="inner-carousel"
+          drag="x"
+          dragConstraints={{
+            right: 0,
+            left: -boundaries[boundaries.length - 1],
+          }}
+          whileDrag={{ cursor: "grabbing" }}
+          onDragEnd={dragEnd}
+          animate={controls}
+          style={{ x }}
+        >
+          {items.map((item, i) => (
+            <Item
+              itemRef={itemRef}
+              itemNo={i}
+              item={item}
+              margin={margin}
+              cardWidths={cardWidths}
+              cardHeights={cardHeights}
+              range={range}
+              x={x}
+            />
+          ))}
+        </motion.div>
       </motion.div>
-    </motion.div>
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          marginTop: "120px",
+          justifyContent: "center",
+        }}
+      >
+        {items.map((_, i) => (
+          <div
+            style={{
+              height: "30px",
+              width: "70px",
+              margin: "0 4px",
+            }}
+            onClick={() => {
+              setActiveItem(i);
+            }}
+          >
+            <div
+              style={{
+                height: "1.5px",
+                backgroundColor: "white",
+                opacity: activeItem === i ? "100%" : "35%",
+                borderRadius: "3px",
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
@@ -130,6 +172,9 @@ export const Item = ({
   range,
   x,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const imageurl = `https://drive.google.com/uc?export=view&id=${item.imgPath}`;
+  console.log({ imageurl });
   const getRange = () => {
     const values = range.slice(itemNo, itemNo + 5);
     return values.length === 5 ? values : [0, 0, 0, 0, 0];
@@ -138,36 +183,46 @@ export const Item = ({
   const width = useTransform(x, getRange(), cardWidths);
   const height = useTransform(x, getRange(), cardHeights);
 
-  // useMotionValueEvent(x, "change", () => {
-  //   itemRef.current[itemNo].style.width = `${width.get()}px`;
-  //   // itemRef.current[itemNo].style.height = `${cardHeight.get()}px`;
-  // });
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     itemRef.current[itemNo].style.width = "100%";
+  //     itemRef.current[itemNo].style.height = "100%";
+  //   }
+  // }, [isOpen]);
 
-  // style={{backgroundImage: `url(https://drive.google.com/uc?export=view&id=${imageIds[0]})`, backgroundSize: '100%'}}
   return (
     <motion.div
+      onClick={() => setIsOpen(!isOpen)}
       className="item"
       style={{
         width,
         height,
         margin,
-        background: item.colourScheme,
         display: range.length === 0 ? "none" : "",
       }}
+      whileHover={{ scale: 1.05 }}
       key={itemNo}
       ref={(el) => el && (itemRef.current[itemNo] = el)}
     >
-      <Image
-        loading="eager"
-        src={`url(https://drive.google.com/uc?export=view&id=${item.imgPath})`}
-        style={{
-          backgroundImage: `url(https://drive.google.com/uc?export=view&id=${item.imgPath})`,
-        }}
-        alt={item.alt}
-        // style={{ position: "relative" }}
-        width={350}
-        height={350}
-      />
+      {item?.imgPath && (
+        // <Image
+        //   loading="eager"
+        //   src={`https://drive.google.com/uc?export=view&id=${item.imgPath}`}
+        //   // src={item.imgPath}
+        //   alt={item.alt}
+        //   style={{ position: "relative" }}
+        //   width={350}
+        //   height={350}
+        // />
+
+        <img
+          src={`https://drive.google.com/uc?export=view&id=${item.imgPath}`}
+          // style={{ height: "-webkit-fill-available" }}
+          style={{ width: "-webkit-fill-available" }}
+
+          // alt="hello"
+        />
+      )}
       {/* {i} */}
     </motion.div>
   );

@@ -9,6 +9,8 @@ import { AppStyleLayout } from "@/components/AppStyleLayout";
 import { Zoom } from "@/components/Zoom";
 import { Carousel } from "@/components/Carousel";
 
+import Image from "next/image";
+
 // style={{backgroundImage: `url(https://drive.google.com/uc?export=view&id=${imageIds[0]})`, backgroundSize: '100%'}}
 
 const inter = Inter({ subsets: ["latin"] });
@@ -54,13 +56,13 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home({
   imageIds,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  console.log({ imageIds });
   const items = [
     { imgPath: imageIds[0] },
-    { imgPath: imageIds[0] },
-    { imgPath: imageIds[0] },
-    { imgPath: imageIds[0] },
-    { imgPath: imageIds[0] },
+    { imgPath: imageIds[1] },
+    { imgPath: imageIds[2] },
   ];
+
   return (
     <>
       <Head>

@@ -19,8 +19,6 @@ body {
 }
 
 .item img {
-  height: 75%;
-  width: 100%;
   pointer-events: none;
 }
 
@@ -36,11 +34,10 @@ body {
   cursor: grab;
 }
 
-
 .heading {
   font-size: 3rem;
   color: white;
-  font-family: 'Roboto', sans-serif;
-  position:absolute;
+  font-family: "Roboto", sans-serif;
+  position: absolute;
   text-align: center;
 }
