@@ -22,10 +22,20 @@ body {
   pointer-events: none;
 }
 
+.img-title {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  background-color: #f8f2ed;
+  /* opacity: 35%; */
+  border-radius: 25px;
+  padding: 13px 22px;
+  font-family: "Roboto", sans-serif;
+}
+
 .inner-carousel {
   display: flex;
   height: 400px;
-  margin-left: calc(50% - 235px);
   align-items: center;
 }
 

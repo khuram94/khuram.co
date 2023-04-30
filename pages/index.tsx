@@ -1,12 +1,8 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
 import { GetStaticProps } from "next";
 import { InferGetStaticPropsType } from "next";
-import styled from "styled-components";
 import { authorize, getImageUrls } from "@/helpers/google-drive";
-import { AppStyleLayout } from "@/components/AppStyleLayout";
-import { Zoom } from "@/components/Zoom";
 import { Carousel } from "@/components/Carousel";
 
 import Image from "next/image";
@@ -58,6 +54,9 @@ export default function Home({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   console.log({ imageIds });
   const items = [
+    { imgPath: imageIds[3] },
+    { imgPath: imageIds[4] },
+    { imgPath: imageIds[5] },
     { imgPath: imageIds[0] },
     { imgPath: imageIds[1] },
     { imgPath: imageIds[2] },
@@ -78,9 +77,11 @@ export default function Home({
       <main
         style={{
           height: "100vh",
-          // background: "rgb(15,32,39)",
-          background:
-            "linear-gradient(90deg, rgba(15,32,39,1) 0%, rgba(32,58,67,1) 35%, rgba(44,83,100,1) 100%)",
+          background: "#1D1D1D",
+          // background:
+          //   "linear-gradient(90deg, rgba(142,45,226,1) 25%, rgba(74,0,224,1) 75%)",
+          // background:
+          //   "linear-gradient(90deg, rgba(15,32,39,1) 0%, rgba(32,58,67,1) 35%, rgba(44,83,100,1) 100%)",
         }}
       >
         {/* <AppStyleLayout />
