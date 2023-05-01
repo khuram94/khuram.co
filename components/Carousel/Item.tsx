@@ -26,19 +26,12 @@ export const Item = ({
   const height = useTransform(x, getRange(), cardHeights);
   const margin = useTransform(x, getRange(), margins);
 
-  //   useEffect(() => {
-  //     if (isOpen) {
-  //       router.push("/gallery?view=tokyo");
-  //     }
-  //   }, [isOpen]);
-
-  const clickHandler = () => {
-    return setIsOpen(!isOpen);
+  const clickHandler = (event, info) => {
+    console.log({ info });
   };
 
   return (
     <motion.div
-      onClick={() => router.push("/gallery?view=tokyo")}
       className="item"
       style={{
         width,
@@ -51,6 +44,7 @@ export const Item = ({
       key={itemNo}
       ref={(el) => el && (itemRef.current[itemNo] = el)}
       animate={controls}
+      onTap={() => router.push("/gallery?album=tokyo")}
     >
       {item?.imgPath && (
         // <Image

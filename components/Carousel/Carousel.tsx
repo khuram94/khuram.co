@@ -1,8 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { PanInfo, motion, useAnimation, useMotionValue } from "framer-motion";
 
-import Link from "next/link";
-
 import Image from "next/image";
 
 import { Item } from "./Item";
@@ -79,6 +77,7 @@ export const Carousel = ({
   }, []);
 
   const dragEnd = (_: any, info: PanInfo) => {
+    console.log("drag end");
     const endPosition = boundaries[activeItem] - info.offset.x;
 
     const closestPosition = boundaries?.reduce((prev: any, curr: any) =>
@@ -107,6 +106,8 @@ export const Carousel = ({
         className="carousel"
         style={{ height, marginBottom: "50px" }}
         ref={carouselRef}
+        exit={{ opacity: 0, transition: { duration: 20 } }}
+        key="some-key"
       >
         <motion.div
           className="inner-carousel"

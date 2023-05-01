@@ -49,8 +49,6 @@ export default function Home({
       >
         {/* <AppStyleLayout />
         <Zoom /> */}
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); clip-path:
-        polygon(0 100%, 100% 100%, 100% 100%, 0% 100%);
         <motion.div
           transition={{ duration: 2 }}
           style={{ backgroundColor: "white", width: "100vw", height: "100vh" }}
@@ -98,3 +96,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: { imageIds: [] },
   };
 };
+
+// clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); clip-path:
+// polygon(0 100%, 100% 100%, 100% 100%, 0% 100%);
