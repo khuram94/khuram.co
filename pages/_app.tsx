@@ -1,14 +1,34 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import Layout from "../components/portfolio/Layout";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const gallery = router.route === "/gallery";
   return (
-    <AnimatePresence>
-      <Component {...pageProps} />
+    <AnimatePresence mode="popLayout">
+      <motion.div
+        initial="initialState"
+        animate="animateState"
+        exit="exitState"
+        variants={{
+          initialState: {
+            y: "100vh",
+          },
+          animateState: {
+            transition: { duration: 1 },
+            y: 0,
+          },
+          exitState: {
+            transition: { duration: 1 },
+            y: "-100vh",
+          },
+        }}
+        key={router.route}
+      >
+        <Component {...pageProps} />
+      </motion.div>
     </AnimatePresence>
   );
 }
-
-// clip-path: polygon(0 100%, 100% 100%, 50% 100%, 50% 100%);

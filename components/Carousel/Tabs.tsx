@@ -1,13 +1,6 @@
-export const Tabs = ({ items, activeItem, setActiveItem }) => (
-  <div
-    style={{
-      display: "flex",
-      width: "100%",
-      marginTop: "120px",
-      justifyContent: "center",
-    }}
-  >
-    {items.map((_, i) => (
+export const Tabs = ({ items, activeItem, setActiveItem }: any) => (
+  <div className="tabs">
+    {items.map((_: any, i: number) => (
       // eslint-disable-next-line react/jsx-key
       <div
         style={{

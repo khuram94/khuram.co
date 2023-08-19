@@ -20,13 +20,11 @@ const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json");
  */
 async function loadSavedCredentialsIfExist() {
   try {
-    console.log("hello");
     const content = await fs.readFile(TOKEN_PATH);
-    console.log({ content });
     const credentials = JSON.parse(content);
     return google.auth.fromJSON(credentials);
   } catch (err) {
-    console.log({ err });
+    console.log("fallen", { err });
     return null;
   }
 }
@@ -57,19 +55,20 @@ async function saveCredentials(client: Auth.OAuth2Client) {
 export async function authorize() {
   let client = await loadSavedCredentialsIfExist();
   if (client) {
-    console.log("have client");
+    console.log("returning");
     return client;
   }
-  console.log("ok");
+
   client = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
   });
-  console.log("set client");
+
   if (client.credentials) {
-    console.log("client credentials");
     await saveCredentials(client);
   }
+
+  console.log("abcd: ", client);
   return client;
 }
 
@@ -85,19 +84,73 @@ type FileType = {
 
 const folderId = "13pCo-sN-A5EVKYkEFi6MquPJwUyGUCdY";
 
+export async function getAlbumCovers(authClient: Auth.OAuth2Client) {
+  const albumFolderId = "1pBrJIArgo1hAeV5lBpGCUioN5oQxOjDa";
+
+  console.log("wakak");
+  const drive = google.drive({ version: "v3", auth: authClient });
+  console.log("drive: ", drive);
+  const response = await drive.files.list({
+    q: `'${albumFolderId}' in parents and trashed = false`,
+    pageSize: 50,
+    fields: "*",
+  });
+
+  const albumCovers = response.data.files;
+
+  if (albumCovers.length === 0) {
+    console.log("No album covers found.");
+    return;
+  }
+
+  const albums = albumCovers.map((file: any) => ({
+    imgPath: file.id,
+    ...(file.description && { name: file.description }),
+  }));
+
+  return albums;
+}
+
 export async function getImageUrls(authClient: Auth.OAuth2Client) {
   const drive = google.drive({ version: "v3", auth: authClient });
-  const res = await drive.files.list({
-    q: `'${folderId}' in parents and trashed = false`,
-    pageSize: 10,
-    fields: "nextPageToken, files(id, name, webViewLink)",
+  const res = await drive.files
+    .list({
+      q: `'${folderId}' in parents and trashed = false`,
+      pageSize: 50,
+      fields: "nextPageToken, files(id, name, webViewLink, mimeType)",
+    })
+    .then(async (response: any) => {
+      const folders: any = [];
+      response.data.files.forEach(
+        (file: any) =>
+          file.mimeType.endsWith("folder") &&
+          folders.push({ id: file.id, name: file.name })
+      );
+      return folders;
+    });
+
+  const pictures = await drive.files.list({
+    q: res.map((folder: any) => `'${folder.id}' in parents`).join(" or "),
+    pageSize: 50,
+    fields: "*",
   });
-  const files = res.data.files;
-  if (files.length === 0) {
+
+  const test = pictures.data.files;
+
+  if (test.length === 0) {
     console.log("No files found.");
     return;
   }
 
-  const imageIds = files.map((file: FileType) => file.id);
+  const imageIds = test.map((file: FileType) => file.id);
+
+  const albums = res.map((folder: any, i: number) => {
+    const index = i * 3;
+    return {
+      albumName: folder.name,
+      images: [imageIds[index], imageIds[index + 1], imageIds[index + 2]],
+    };
+  });
+
   return imageIds;
 }
