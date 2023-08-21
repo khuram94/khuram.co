@@ -3,7 +3,7 @@ const path = require("path");
 const process = require("process");
 const { authenticate } = require("@google-cloud/local-auth");
 const { google } = require("googleapis");
-import { Auth } from 'googleapis'
+import { Auth } from "googleapis";
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"];
@@ -11,7 +11,7 @@ const SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"];
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH = path.join(process.cwd(), "token.json");
-const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.js");
+const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json");
 
 /**
  * Reads previously authorized credentials from the save file.
@@ -56,13 +56,16 @@ export async function authorize() {
   if (client) {
     return client;
   }
+
   client = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
   });
+
   if (client.credentials) {
     await saveCredentials(client);
   }
+
   return client;
 }
 
@@ -72,25 +75,77 @@ export async function authorize() {
  */
 
 type FileType = {
-  name: string,
-  id: string,
+  name: string;
+  id: string;
 };
 
 const folderId = "13pCo-sN-A5EVKYkEFi6MquPJwUyGUCdY";
 
+export async function getAlbumCovers(authClient: Auth.OAuth2Client) {
+  const albumFolderId = "1pBrJIArgo1hAeV5lBpGCUioN5oQxOjDa";
+
+  const drive = google.drive({ version: "v3", auth: authClient });
+  const response = await drive.files.list({
+    q: `'${albumFolderId}' in parents and trashed = false`,
+    pageSize: 50,
+    fields: "*",
+  });
+
+  const albumCovers = response.data.files;
+
+  if (albumCovers.length === 0) {
+    console.log("No album covers found.");
+    return;
+  }
+
+  const albums = albumCovers.map((file: any) => ({
+    imgPath: file.id,
+    ...(file.description && { name: file.description }),
+  }));
+
+  return albums;
+}
+
 export async function getImageUrls(authClient: Auth.OAuth2Client) {
   const drive = google.drive({ version: "v3", auth: authClient });
-  const res = await drive.files.list({
-    q: `'${folderId}' in parents and trashed = false`,
-    pageSize: 10,
-    fields: "nextPageToken, files(id, name, webViewLink)",
+  const res = await drive.files
+    .list({
+      q: `'${folderId}' in parents and trashed = false`,
+      pageSize: 50,
+      fields: "nextPageToken, files(id, name, webViewLink, mimeType)",
+    })
+    .then(async (response: any) => {
+      const folders: any = [];
+      response.data.files.forEach(
+        (file: any) =>
+          file.mimeType.endsWith("folder") &&
+          folders.push({ id: file.id, name: file.name })
+      );
+      return folders;
+    });
+
+  const pictures = await drive.files.list({
+    q: res.map((folder: any) => `'${folder.id}' in parents`).join(" or "),
+    pageSize: 50,
+    fields: "*",
   });
-  const files = res.data.files;
-  if (files.length === 0) {
+
+  const test = pictures.data.files;
+
+  if (test.length === 0) {
     console.log("No files found.");
     return;
   }
 
-  const imageIds = files.map((file: FileType) => file.id);
+  const imageIds = test.map((file: FileType) => file.id);
+
+  const albums = res.map((folder: any, i: number) => {
+    const index = i * 3;
+    return {
+      albumName: folder.name,
+      images: [imageIds[index], imageIds[index + 1], imageIds[index + 2]],
+    };
+  });
+
   return imageIds;
 }
