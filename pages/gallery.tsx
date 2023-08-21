@@ -1,22 +1,24 @@
 import Head from "next/head";
-import { Inter } from "next/font/google";
+import { useEffect, useState } from "react";
 import { GetStaticProps } from "next";
 import { InferGetStaticPropsType } from "next";
 import { authorize, getAlbumCovers } from "@/helpers/google-drive";
 import { Carousel } from "@/components/Carousel";
+import { AnimatePresence, motion } from "framer-motion";
 
-import { useRouter } from "next/router";
-
-const inter = Inter({ subsets: ["latin"] });
-
-export default function Home({
+export default function Gallery({
   albums,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const [mediaQuery, setMediaQuery] = useState<MediaQueryList>();
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 450px)");
+    setMediaQuery(mediaQuery);
+  }, []);
+
   return (
     <>
       <Head>
         <title>Gallery</title>
-        <meta name="Khuram.co. Gallery." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -24,9 +26,11 @@ export default function Home({
         style={{
           height: "100vh",
           background: "#1D1D1D",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <text className="heading">KHURAM.CO. GALLERY.</text>
+        <text className="heading test">THE LENS. WORLDWIDE.</text>
         <div
           style={{
             display: "flex",
@@ -36,7 +40,26 @@ export default function Home({
             overflow: "hidden",
           }}
         >
-          <Carousel items={albums} />
+          {mediaQuery && (
+            <AnimatePresence mode="popLayout">
+              <motion.div
+                initial="initialState"
+                animate="animateState"
+                exit="exitState"
+                variants={{
+                  initialState: {
+                    x: "100vw",
+                  },
+                  animateState: {
+                    transition: { duration: 1.5, delay: 2 },
+                    x: 0,
+                  },
+                }}
+              >
+                <Carousel items={albums} isMobile={mediaQuery.matches} />
+              </motion.div>
+            </AnimatePresence>
+          )}
         </div>
       </main>
     </>

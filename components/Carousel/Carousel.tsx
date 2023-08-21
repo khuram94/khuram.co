@@ -6,9 +6,6 @@ import {
   useMotionValue,
   useMotionValueEvent,
 } from "framer-motion";
-import { useWindowSize } from "@/hooks/use-window-size";
-
-import Image from "next/image";
 
 import { Item } from "./Item";
 import { Tabs } from "./Tabs";
@@ -17,12 +14,13 @@ type TItem = [{ imgPath: string; alt: string; colourScheme: string }];
 
 type TCarouselProps = {
   items: TItem;
+  isMobile: boolean;
 };
 
-export const Carousel = ({ items }: TCarouselProps) => {
-  const width = 450;
-  const height = 650;
-  const margin = 100;
+export const Carousel = ({ items, isMobile }: TCarouselProps) => {
+  const width = isMobile ? 250 : 450;
+  const height = isMobile ? 400 : 650;
+  const margin = isMobile ? 10 : 100;
   const itemRef = useRef<Array<HTMLDivElement>>([]);
   const carouselRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
@@ -63,14 +61,11 @@ export const Carousel = ({ items }: TCarouselProps) => {
     xsHeight,
   ]);
 
-  const [tabMargin, setTabMargin] = useState(100);
-
   const [activeCardSpace, setActiveCardSpace] = useState(width + margin * 2);
   const cardSpace = width + margin * 2;
 
   const makeNegative = (array: number[]) => array.map((x) => x * -1);
 
-  // MAKE THIS DYNAMIC AND WE MIGHT BE ONTO A WINNER...
   const innerCarouselMarginLeft =
     (carouselRef?.current?.clientWidth || 0) / 2 - activeCardSpace / 2;
 
@@ -116,10 +111,12 @@ export const Carousel = ({ items }: TCarouselProps) => {
   const setBounds = (cardSizes: number[], cardMargins: number[]) =>
     items.reduce(
       (pV, cV, cI) => {
-        const cardSize = cI === 0 ? sWidth : xsWidth;
-        const margin = cI === 0 ? sMargin : xsMargin;
-        const bound = cardSize + margin * 2 + pV[pV.length - 1];
-        pV.push(bound);
+        if (cI < items.length - 1) {
+          const cardSize = cI === 0 ? sWidth : xsWidth;
+          const margin = cI === 0 ? sMargin : xsMargin;
+          const bound = cardSize + margin * 2 + pV[pV.length - 1];
+          pV.push(bound);
+        }
         return pV;
       },
       [0]
@@ -132,43 +129,6 @@ export const Carousel = ({ items }: TCarouselProps) => {
     setBoundaries(bounds);
     setLeftConstraint(-bounds[bounds.length - 1]);
   }, []);
-
-  const resize = useWindowSize();
-
-  const maxDisplayWidth = 1750;
-  const minDisplayWidth = 250;
-
-  const maxDisplayHeight = 1117;
-  const minDisplayHeight = 250;
-
-  const maxWidth = 420;
-  const minWidth = 250;
-
-  const maxHeight = 650;
-  const minHeight = 270;
-
-  const maxMargin = 100;
-  const minMargin = 10;
-
-  const maxTabMargin = 200;
-  const minTabMargin = 100;
-
-  const transformWidth = (value: number, maxVal: number, minVal: number) => {
-    return (
-      ((value - minDisplayWidth) / (maxDisplayWidth - minDisplayWidth)) *
-        (maxVal - minVal) +
-      minVal
-    );
-  };
-
-  const transformHeight = (value: number, maxVal: number, minVal: number) => {
-    return (
-      ((value - minDisplayHeight) / (maxDisplayHeight - minDisplayHeight)) *
-        (maxVal - minVal) +
-      minVal
-    );
-  };
-
   const dragEnd = (_: any, info: PanInfo) => {
     const endPosition = boundaries[activeItem] - info.offset.x;
 
@@ -197,43 +157,46 @@ export const Carousel = ({ items }: TCarouselProps) => {
   });
 
   return (
-    <div style={{ width: "100%", marginTop: "7%" }}>
-      <motion.div className="carousel" ref={carouselRef}>
-        <motion.div
-          className="inner-carousel"
-          drag="x"
-          dragConstraints={{
-            right: 0,
-            left: leftConstraint,
-          }}
-          whileDrag={{ cursor: "grabbing" }}
-          onDragEnd={dragEnd}
-          animate={controls}
-          style={{
-            x,
-            marginLeft: innerCarouselMarginLeft,
-          }}
-        >
-          {items.map((item, i) => (
-            <Item
-              key={i}
-              itemRef={itemRef}
-              itemNo={i}
-              item={item}
-              cardWidths={cardWidths}
-              cardHeights={cardHeights}
-              margins={margins}
-              range={range}
-              x={x}
-            />
-          ))}
+    <>
+      <div className="carousel-container">
+        <motion.div className="carousel" ref={carouselRef}>
+          <motion.div
+            className="inner-carousel"
+            drag="x"
+            dragConstraints={{
+              right: 0,
+              left: leftConstraint,
+            }}
+            whileDrag={{ cursor: "grabbing" }}
+            onDragEnd={dragEnd}
+            animate={controls}
+            style={{
+              x,
+              marginLeft: innerCarouselMarginLeft,
+            }}
+          >
+            {items.map((item, i) => (
+              <Item
+                key={i}
+                itemRef={itemRef}
+                itemNo={i}
+                item={item}
+                cardWidths={cardWidths}
+                cardHeights={cardHeights}
+                margins={margins}
+                range={range}
+                x={x}
+              />
+            ))}
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
       <Tabs
         items={items}
         activeItem={activeItem}
         setActiveItem={setActiveItem}
+        tabPosition={height / 2 + 70}
       />
-    </div>
+    </>
   );
 };

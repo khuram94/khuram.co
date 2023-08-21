@@ -24,7 +24,6 @@ async function loadSavedCredentialsIfExist() {
     const credentials = JSON.parse(content);
     return google.auth.fromJSON(credentials);
   } catch (err) {
-    console.log("fallen", { err });
     return null;
   }
 }
@@ -55,7 +54,6 @@ async function saveCredentials(client: Auth.OAuth2Client) {
 export async function authorize() {
   let client = await loadSavedCredentialsIfExist();
   if (client) {
-    console.log("returning");
     return client;
   }
 
@@ -68,7 +66,6 @@ export async function authorize() {
     await saveCredentials(client);
   }
 
-  console.log("abcd: ", client);
   return client;
 }
 
@@ -87,9 +84,7 @@ const folderId = "13pCo-sN-A5EVKYkEFi6MquPJwUyGUCdY";
 export async function getAlbumCovers(authClient: Auth.OAuth2Client) {
   const albumFolderId = "1pBrJIArgo1hAeV5lBpGCUioN5oQxOjDa";
 
-  console.log("wakak");
   const drive = google.drive({ version: "v3", auth: authClient });
-  console.log("drive: ", drive);
   const response = await drive.files.list({
     q: `'${albumFolderId}' in parents and trashed = false`,
     pageSize: 50,

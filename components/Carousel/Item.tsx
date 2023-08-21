@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { useRouter } from "next/router";
 import { useAnimation, useTransform, motion } from "framer-motion";
-import { useWindowSize } from "@/hooks/use-window-size";
 
 export const Item = ({
   itemRef,
@@ -16,7 +14,6 @@ export const Item = ({
   const router = useRouter();
   const controls = useAnimation();
   const imageurl = `https://drive.google.com/uc?export=view&id=${item.imgPath}`;
-  console.log({ imageurl });
 
   const getRange = () => {
     const values = range.slice(itemNo, itemNo + 5);
@@ -40,10 +37,20 @@ export const Item = ({
       key={itemNo}
       ref={(el) => el && (itemRef.current[itemNo] = el)}
       animate={controls}
-      onTap={() => router.push("/album")}
+      // onTap={() => router.push("/album")}
     >
       {item?.imgPath && (
+        // <Image
+        //   className={`${loading ? "gradient-background" : ""}`}
+        //   loader={() => imageurl}
+        //   src={imageurl}
+        //   fill={true}
+        //   alt=""
+        //   onLoadingComplete={() => setLoading(false)}
+        // />
+
         <img
+          className="gradient-background"
           src={imageurl}
           style={{
             width: "100%",
