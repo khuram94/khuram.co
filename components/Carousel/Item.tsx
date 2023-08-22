@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Image from "next/image";
 import { useAnimation, useTransform, motion } from "framer-motion";
 
 export const Item = ({
@@ -40,25 +41,25 @@ export const Item = ({
       // onTap={() => router.push("/album")}
     >
       {item?.imgPath && (
-        // <Image
-        //   className={`${loading ? "gradient-background" : ""}`}
-        //   loader={() => imageurl}
-        //   src={imageurl}
-        //   fill={true}
-        //   alt=""
-        //   onLoadingComplete={() => setLoading(false)}
-        // />
-
-        <img
+        <Image
           className="gradient-background"
+          loader={() => imageurl}
           src={imageurl}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            overflow: "hidden",
-          }}
+          fill={true}
+          alt=""
+          loading="eager"
         />
+
+        // <img
+        //   className="gradient-background"
+        //   src={imageurl}
+        //   style={{
+        //     width: "100%",
+        //     height: "100%",
+        //     objectFit: "cover",
+        //     overflow: "hidden",
+        //   }}
+        // />
       )}
       {item.name && <div className="img-title">{item.name}</div>}
     </motion.div>

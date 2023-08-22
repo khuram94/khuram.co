@@ -135,14 +135,17 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
     const closestPosition = boundaries?.reduce((prev: any, curr: any) =>
       Math.abs(curr - endPosition) < Math.abs(prev - endPosition) ? curr : prev
     );
-
     controls.start({
       x: -closestPosition,
-      transition: { type: "tween", duration: 0.5, velocity: 10 },
+      transition: { type: "tween", duration: 0.5 },
     });
 
     setActiveItem(boundaries.indexOf(closestPosition));
   };
+
+  // const test = (event) => {
+  //   console.log({ event });
+  // };
 
   //   on tab selection
   useEffect(() => {
@@ -169,6 +172,7 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
             }}
             whileDrag={{ cursor: "grabbing" }}
             onDragEnd={dragEnd}
+            // onTransitionEnd={test}
             animate={controls}
             style={{
               x,
