@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from "react";
 import {
-  PanInfo,
   motion,
   useAnimation,
   useMotionValue,
@@ -23,7 +22,7 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
   const margin = isMobile ? 10 : 100;
   const itemRef = useRef<Array<HTMLDivElement>>([]);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const controls = useAnimation();
+  const tabControls = useAnimation();
   const x = useMotionValue(0);
 
   const [boundaries, setBoundaries] = useState<number[]>([]);
@@ -70,12 +69,10 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
     (carouselRef?.current?.clientWidth || 0) / 2 - activeCardSpace / 2;
 
   const makeRange = (bounds: number[]) => {
-    console.log({ bounds });
     const range: number[] = [cardSpace * 2, cardSpace, ...makeNegative(bounds)];
     const lastItemRange: number = range[range.length - 1];
     range.push(lastItemRange - cardSpace);
     range.push(lastItemRange - cardSpace * 2);
-    console.log({ range });
     return range;
   };
 
@@ -122,6 +119,18 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
       [0]
     );
 
+  const snapToItem = (target) => {
+    const endPosition = Math.abs(target);
+
+    const closestPosition = boundaries?.reduce((prev: any, curr: any) =>
+      Math.abs(curr - endPosition) < Math.abs(prev - endPosition) ? curr : prev
+    );
+
+    setActiveItem(boundaries.indexOf(closestPosition));
+
+    return target < 0 ? -Math.abs(closestPosition) : Math.abs(closestPosition);
+  };
+
   useEffect(() => {
     const bounds = setBounds(initialsizes, initialMargins);
     const range = makeRange(bounds);
@@ -129,34 +138,17 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
     setBoundaries(bounds);
     setLeftConstraint(-bounds[bounds.length - 1]);
   }, []);
-  const dragEnd = (_: any, info: PanInfo) => {
-    const endPosition = boundaries[activeItem] - info.offset.x;
 
-    const closestPosition = boundaries?.reduce((prev: any, curr: any) =>
-      Math.abs(curr - endPosition) < Math.abs(prev - endPosition) ? curr : prev
-    );
-    controls.start({
-      x: -closestPosition,
-      transition: { type: "tween", duration: 0.5 },
-    });
-
-    setActiveItem(boundaries.indexOf(closestPosition));
-  };
-
-  // const test = (event) => {
-  //   console.log({ event });
-  // };
-
-  //   on tab selection
+  //  on tab selection
   useEffect(() => {
-    controls.start({
+    tabControls.start({
       x: -boundaries[activeItem],
       transition: { type: "tween", duration: 0.5 },
     });
   }, [activeItem]);
 
   useMotionValueEvent(x, "animationComplete", () => {
-    controls.set({ x: -boundaries[activeItem] });
+    tabControls.set({ x: -boundaries[activeItem] });
   });
 
   return (
@@ -170,10 +162,13 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
               right: 0,
               left: leftConstraint,
             }}
+            dragTransition={{
+              power: 0.4,
+              timeConstant: 300,
+              modifyTarget: snapToItem,
+            }}
             whileDrag={{ cursor: "grabbing" }}
-            onDragEnd={dragEnd}
-            // onTransitionEnd={test}
-            animate={controls}
+            animate={tabControls}
             style={{
               x,
               marginLeft: innerCarouselMarginLeft,
