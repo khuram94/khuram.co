@@ -30,7 +30,7 @@ export default function Gallery({
           flexDirection: "column",
         }}
       >
-        <text className="heading test">THE LENS. WORLDWIDE.</text>
+        <text className="heading">THE LENS. WORLDWIDE.</text>
         <div
           style={{
             display: "flex",
@@ -54,6 +54,11 @@ export default function Gallery({
                     transition: { duration: 1.5, delay: 2 },
                     x: 0,
                   },
+                }}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
                 }}
               >
                 <Carousel items={albums} isMobile={mediaQuery.matches} />
