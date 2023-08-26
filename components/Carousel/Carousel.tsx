@@ -1,10 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import {
-  motion,
-  useAnimation,
-  useMotionValue,
-  useMotionValueEvent,
-} from "framer-motion";
+import { motion, useAnimation, useMotionValue } from "framer-motion";
 
 import { Item } from "./Item";
 import { Tabs } from "./Tabs";
@@ -25,8 +20,10 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
   const [range, setRange] = useState<Array<number>>([]);
   const [activeItem, setActiveItem] = useState(0);
 
+  const carouselHeight = carouselRef?.current?.clientHeight;
+
   const { cardHeights, cardWidths, cardMargins, activeCardSpace } =
-    getCardSizes(isMobile);
+    getCardSizes(isMobile, carouselHeight);
 
   const [xsWidth, sWidth] = cardWidths;
   const [xsMargin, sMargin] = cardMargins;
@@ -39,19 +36,16 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
     sMargin,
   });
 
-  const innerCarouselMarginLeft =
-    (carouselRef?.current?.clientWidth || 0) / 2 - activeCardSpace / 2;
   const leftConstraint = -boundaries[boundaries.length - 1];
+  const carouselWidth = carouselRef?.current?.clientWidth;
+  const innerCarouselMarginLeft =
+    (carouselWidth || 0) / 2 - activeCardSpace / 2;
 
   useEffect(() => setRange(getRange(boundaries, activeCardSpace)), []);
 
   useEffect(() => {
     handleTabSelection({ tabControls, boundaries, activeItem });
   }, [activeItem, tabControls, boundaries]);
-
-  useMotionValueEvent(x, "animationComplete", () => {
-    tabControls.set({ x: -boundaries[activeItem] });
-  });
 
   return (
     <>
@@ -64,12 +58,14 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
             left: leftConstraint,
           }}
           dragTransition={{
-            power: 0.4,
-            timeConstant: 300,
+            power: 0.1,
             modifyTarget: (target) =>
               snapToItem({ target, boundaries, setActiveItem }),
           }}
           whileDrag={{ cursor: "grabbing" }}
+          onAnimationComplete={() =>
+            tabControls.set({ x: -boundaries[activeItem] })
+          }
           style={{
             x,
             marginLeft: innerCarouselMarginLeft,
