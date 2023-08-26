@@ -58,7 +58,7 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
             left: leftConstraint,
           }}
           dragTransition={{
-            power: 0.1,
+            power: 0.2,
             timeConstant: 300,
             modifyTarget: (target) =>
               snapToItem({ target, boundaries, setActiveItem }),
