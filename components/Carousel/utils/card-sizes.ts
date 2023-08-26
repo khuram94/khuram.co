@@ -1,0 +1,26 @@
+const desktopCardSizes = { height: 650, width: 450, margin: 100 };
+
+const getActiveCardSize = (isMobile: boolean) =>
+  isMobile
+    ? {
+        height: window.innerHeight * 0.6,
+        width: window.innerWidth * 0.8,
+        margin: window.innerWidth * 0.025,
+      }
+    : desktopCardSizes;
+
+export const getCardSizes = (isMobile: boolean) => {
+  const { height, width, margin } = getActiveCardSize(isMobile);
+  const xsWidth = width * 0.5;
+  const sWidth = width * 0.8;
+  const xsHeight = height * 0.5;
+  const sHeight = height * 0.8;
+  const xsMargin = margin * 0.85;
+  const sMargin = margin * 0.95;
+
+  const cardHeights = [xsHeight, sHeight, height, sHeight, xsHeight];
+  const cardWidths = [xsWidth, sWidth, width, sWidth, xsWidth];
+  const cardMargins = [xsMargin, sMargin, margin, sMargin, xsMargin];
+  const activeCardSpace = width + margin * 2;
+  return { cardHeights, cardWidths, cardMargins, activeCardSpace };
+};

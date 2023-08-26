@@ -25,12 +25,13 @@ export default function Gallery({
       <main
         style={{
           height: "100vh",
-          background: "#1D1D1D",
+          background:
+            "linear-gradient(0deg, rgba(0,0,0,1) 1%, rgba(29,29,29,1) 50%, rgba(0,0,0,1) 99%)",
           display: "flex",
           flexDirection: "column",
         }}
       >
-        <text className="heading test">THE LENS. WORLDWIDE.</text>
+        <text className="heading">Lens i. INTERNATIONAL.</text>
         <div
           style={{
             display: "flex",
@@ -54,6 +55,11 @@ export default function Gallery({
                     transition: { duration: 1.5, delay: 2 },
                     x: 0,
                   },
+                }}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
                 }}
               >
                 <Carousel items={albums} isMobile={mediaQuery.matches} />

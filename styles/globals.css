@@ -4,11 +4,6 @@ body {
   overflow-x: hidden;
 }
 
-body {
-  margin: 0;
-  background-color: #f4f5f3;
-}
-
 .item {
   display: flex;
   flex-direction: column;
@@ -30,7 +25,7 @@ body {
   color: white;
   border-radius: 25px;
   padding: 13px 22px;
-  font-family: "Roboto", sans-serif;
+  font-family: "SaxMono";
 
   @media (max-width: 400px) {
     bottom: 15px;
@@ -42,65 +37,58 @@ body {
 .inner-carousel {
   display: flex;
   align-items: center;
-  position: fixed;
+  height: 100%;
 }
 
 .carousel-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: 100%;
 }
 
 .carousel {
   display: flex;
-  cursor: grab;
+  height: 90%;
   width: 100%;
   align-items: center;
+  cursor: grab;
 }
 
 .heading {
   font-size: 68px;
   color: white;
-  font-family: "Roboto", sans-serif;
-  position: absolute;
+  font-family: "SaxMono";
   text-align: center;
   width: 100vw;
-  margin-top: 18px;
+  margin-top: 28px;
+  margin-bottom: 12px;
+  animation: 1.5s ease 1s normal both 1 fadeIn;
   @media (max-width: 820px) {
     font-size: 36px;
     margin-top: 24px;
   }
 }
 
-body {
-  background-color: lightgreen;
+.subheading {
+  font-size: 18px;
+  color: white;
+  font-family: "SaxMono";
+  text-align: center;
+  width: 100vw;
+  margin-bottom: 20px;
+  animation: 1.5s ease 1s normal both 1 fadeIn;
+  @media (max-width: 820px) {
+    font-size: 16px;
+  }
 }
 
 .tabs {
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100%;
-  position: absolute;
-}
-
-.element {
-  width: 20px;
-  height: 20px;
-  background-color: tomato;
-  transition: all 0.3s ease;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.newCarousel {
-  display: flex;
-  flex-wrap: nowrap;
-  width: 100%;
-  position: absolute;
-  transition: all 0.5s ease;
-}
-
-.test {
-  animation: 1.5s ease 1s normal both 1 fadeIn;
+  height: 10%;
 }
 
 @keyframes fadeIn {
@@ -130,4 +118,11 @@ body {
   100% {
     background-position: 0% 50%;
   }
+}
+
+@font-face {
+  font-family: "SaxMono";
+  src: local("SaxMono"), url(../fonts/saxmono.ttf) format("woff");
+  font-weight: normal;
+  font-style: normal;
 }

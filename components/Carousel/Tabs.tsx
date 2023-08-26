@@ -1,21 +1,17 @@
-export const Tabs = ({
-  items,
-  activeItem,
-  setActiveItem,
-  tabPosition,
-}: any) => (
-  <div className="tabs" style={{ top: tabPosition }}>
+export const Tabs = ({ items, activeItem, setActiveItem }: any) => (
+  <div className="tabs">
     {items.map((_: any, i: number) => (
-      // eslint-disable-next-line react/jsx-key
       <div
+        key={i}
         style={{
-          height: "30px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          height: "100%",
           width: "70px",
           margin: "0 4px",
         }}
-        onClick={() => {
-          setActiveItem(i);
-        }}
+        onClick={() => setActiveItem(i)}
       >
         <div
           style={{
