@@ -1,8 +1,8 @@
 export const Tabs = ({ items, activeItem, setActiveItem }: any) => (
   <div className="tabs">
     {items.map((_: any, i: number) => (
-      // eslint-disable-next-line react/jsx-key
       <div
+        key={i}
         style={{
           display: "flex",
           flexDirection: "column",

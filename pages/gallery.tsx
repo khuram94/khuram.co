@@ -25,12 +25,13 @@ export default function Gallery({
       <main
         style={{
           height: "100vh",
-          background: "#1D1D1D",
+          background:
+            "linear-gradient(0deg, rgba(0,0,0,1) 1%, rgba(29,29,29,1) 50%, rgba(0,0,0,1) 99%)",
           display: "flex",
           flexDirection: "column",
         }}
       >
-        <text className="heading">THE LENS. WORLDWIDE.</text>
+        <text className="heading">Lens i. INTERNATIONAL.</text>
         <div
           style={{
             display: "flex",

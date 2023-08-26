@@ -25,7 +25,7 @@ body {
   color: white;
   border-radius: 25px;
   padding: 13px 22px;
-  font-family: "Roboto", sans-serif;
+  font-family: "SaxMono";
 
   @media (max-width: 400px) {
     bottom: 15px;
@@ -58,15 +58,28 @@ body {
 .heading {
   font-size: 68px;
   color: white;
-  font-family: "Roboto", sans-serif;
+  font-family: "SaxMono";
   text-align: center;
   width: 100vw;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 28px;
+  margin-bottom: 12px;
   animation: 1.5s ease 1s normal both 1 fadeIn;
   @media (max-width: 820px) {
     font-size: 36px;
     margin-top: 24px;
+  }
+}
+
+.subheading {
+  font-size: 18px;
+  color: white;
+  font-family: "SaxMono";
+  text-align: center;
+  width: 100vw;
+  margin-bottom: 20px;
+  animation: 1.5s ease 1s normal both 1 fadeIn;
+  @media (max-width: 820px) {
+    font-size: 16px;
   }
 }
 
@@ -105,4 +118,11 @@ body {
   100% {
     background-position: 0% 50%;
   }
+}
+
+@font-face {
+  font-family: "SaxMono";
+  src: local("SaxMono"), url(../fonts/saxmono.ttf) format("woff");
+  font-weight: normal;
+  font-style: normal;
 }

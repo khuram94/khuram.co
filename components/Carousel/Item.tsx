@@ -36,7 +36,6 @@ export const Item = ({
       }}
       whileHover={{ scale: 1.05 }}
       key={itemNo}
-      ref={(el) => el && (itemRef.current[itemNo] = el)}
       animate={controls}
       // onTap={() => router.push("/album")}
     >
@@ -46,20 +45,10 @@ export const Item = ({
           loader={() => imageurl}
           src={imageurl}
           fill={true}
+          style={{ objectFit: "cover" }}
           alt=""
           loading="eager"
         />
-
-        // <img
-        //   className="gradient-background"
-        //   src={imageurl}
-        //   style={{
-        //     width: "100%",
-        //     height: "100%",
-        //     objectFit: "cover",
-        //     overflow: "hidden",
-        //   }}
-        // />
       )}
       {item.name && <div className="img-title">{item.name}</div>}
     </motion.div>
