@@ -24,7 +24,7 @@ export default function Gallery({
       </Head>
       <main
         style={{
-          height: "100vh",
+          height: "100dvh",
           background:
             "linear-gradient(0deg, rgba(0,0,0,1) 1%, rgba(29,29,29,1) 50%, rgba(0,0,0,1) 99%)",
           display: "flex",
