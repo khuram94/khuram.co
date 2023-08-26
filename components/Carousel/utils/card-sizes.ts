@@ -1,16 +1,16 @@
 const desktopCardSizes = { height: 650, width: 450, margin: 100 };
 
-const getActiveCardSize = (isMobile: boolean) =>
+const getActiveCardSize = (isMobile: boolean, carouselHeight?: number) =>
   isMobile
     ? {
-        height: window.innerHeight * 0.6,
+        height: (carouselHeight || window.innerHeight) * 0.8,
         width: window.innerWidth * 0.8,
         margin: window.innerWidth * 0.025,
       }
     : desktopCardSizes;
 
-export const getCardSizes = (isMobile: boolean) => {
-  const { height, width, margin } = getActiveCardSize(isMobile);
+export const getCardSizes = (isMobile: boolean, carouselHeight?: number) => {
+  const { height, width, margin } = getActiveCardSize(isMobile, carouselHeight);
   const xsWidth = width * 0.5;
   const sWidth = width * 0.8;
   const xsHeight = height * 0.5;

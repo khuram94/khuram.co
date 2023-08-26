@@ -31,7 +31,7 @@ export default function Gallery({
           flexDirection: "column",
         }}
       >
-        <text className="heading">Lens i. INTERNATIONAL.</text>
+        <text className="heading">THE LENS. WORLDWIDE.</text>
         <div
           style={{
             display: "flex",
@@ -42,29 +42,29 @@ export default function Gallery({
           }}
         >
           {mediaQuery && (
-            <AnimatePresence mode="popLayout">
-              <motion.div
-                initial="initialState"
-                animate="animateState"
-                exit="exitState"
-                variants={{
-                  initialState: {
-                    x: "100vw",
-                  },
-                  animateState: {
-                    transition: { duration: 1.5, delay: 2 },
-                    x: 0,
-                  },
-                }}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "100%",
-                }}
-              >
-                <Carousel items={albums} isMobile={mediaQuery.matches} />
-              </motion.div>
-            </AnimatePresence>
+            // <AnimatePresence mode="popLayout">
+            //   <motion.div
+            //     initial="initialState"
+            //     animate="animateState"
+            //     exit="exitState"
+            //     variants={{
+            //       initialState: {
+            //         x: "100vw",
+            //       },
+            //       animateState: {
+            //         transition: { duration: 1.5, delay: 2 },
+            //         x: 0,
+            //       },
+            //     }}
+            //     style={{
+            //       display: "flex",
+            //       flexDirection: "column",
+            //       height: "100%",
+            //     }}
+            //   >
+            <Carousel items={albums} isMobile={mediaQuery.matches} />
+            //   </motion.div>
+            // </AnimatePresence>
           )}
         </div>
       </main>
