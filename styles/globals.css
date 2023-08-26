@@ -25,7 +25,7 @@ body {
   color: white;
   border-radius: 25px;
   padding: 13px 22px;
-  font-family: "SaxMono";
+  font-family: "YesYesNo";
 
   @media (max-width: 400px) {
     bottom: 15px;
@@ -58,7 +58,7 @@ body {
 .heading {
   font-size: 68px;
   color: white;
-  font-family: "SaxMono";
+  font-family: "YesYesNo";
   text-align: center;
   width: 100vw;
   margin-top: 28px;
@@ -73,7 +73,7 @@ body {
 .subheading {
   font-size: 18px;
   color: white;
-  font-family: "SaxMono";
+  font-family: "YesYesNo";
   text-align: center;
   width: 100vw;
   margin-bottom: 20px;
@@ -121,8 +121,17 @@ body {
 }
 
 @font-face {
+  font-family: "YesYesNo";
+  src: local("YesYesNo"), url(../fonts/YesYesNo.ttf.woff) format("woff"),
+    url(../fonts//YesYesNo.ttf.svg) format("svg"),
+    url(../fonts/YesYesNo.ttf.eot) format("embedded-opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* @font-face {
   font-family: "SaxMono";
   src: local("SaxMono"), url(../fonts/saxmono.ttf) format("woff");
   font-weight: normal;
   font-style: normal;
-}
+} */

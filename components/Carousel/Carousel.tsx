@@ -1,10 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import {
-  motion,
-  useAnimation,
-  useMotionValue,
-  useMotionValueEvent,
-} from "framer-motion";
+import { motion, useAnimation, useMotionValue } from "framer-motion";
 
 import { Item } from "./Item";
 import { Tabs } from "./Tabs";
@@ -49,10 +44,6 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
     handleTabSelection({ tabControls, boundaries, activeItem });
   }, [activeItem, tabControls, boundaries]);
 
-  useMotionValueEvent(x, "animationComplete", () => {
-    tabControls.set({ x: -boundaries[activeItem] });
-  });
-
   return (
     <>
       <motion.div className="carousel" ref={carouselRef}>
@@ -70,6 +61,9 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
               snapToItem({ target, boundaries, setActiveItem }),
           }}
           whileDrag={{ cursor: "grabbing" }}
+          onAnimationComplete={() =>
+            tabControls.set({ x: -boundaries[activeItem] })
+          }
           style={{
             x,
             marginLeft: innerCarouselMarginLeft,
