@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { GetStaticProps } from "next";
 import { InferGetStaticPropsType } from "next";
-import { authorize, getAlbumCovers } from "@/helpers/google-drive";
+import { authorize, getGallery } from "@/helpers/google-drive";
 import { Carousel } from "@/components/Carousel";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -31,7 +31,7 @@ export default function Gallery({
           flexDirection: "column",
         }}
       >
-        <text className="heading">THE LENS. WORLDWIDE.</text>
+        <h1 className="heading">THE LENS. WORLDWIDE.</h1>
         <div
           style={{
             display: "flex",
@@ -42,29 +42,7 @@ export default function Gallery({
           }}
         >
           {mediaQuery && (
-            // <AnimatePresence mode="popLayout">
-            //   <motion.div
-            //     initial="initialState"
-            //     animate="animateState"
-            //     exit="exitState"
-            //     variants={{
-            //       initialState: {
-            //         x: "100vw",
-            //       },
-            //       animateState: {
-            //         transition: { duration: 1.5, delay: 2 },
-            //         x: 0,
-            //       },
-            //     }}
-            //     style={{
-            //       display: "flex",
-            //       flexDirection: "column",
-            //       height: "100%",
-            //     }}
-            //   >
             <Carousel items={albums} isMobile={mediaQuery.matches} />
-            //   </motion.div>
-            // </AnimatePresence>
           )}
         </div>
       </main>
@@ -74,7 +52,7 @@ export default function Gallery({
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const albums = await authorize()
-    .then(async (authClient) => await getAlbumCovers(authClient))
+    .then(async (authClient) => await getGallery(authClient))
     .catch(console.error);
   return {
     props: { albums },

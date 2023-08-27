@@ -2,6 +2,10 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { useAnimation, useTransform, motion } from "framer-motion";
 
+const formatName = (name: string) => {
+  return name.replace(" ", "-").toLowerCase();
+};
+
 export const Item = ({
   itemRef,
   itemNo,
@@ -33,11 +37,12 @@ export const Item = ({
         height,
         margin,
         display: range.length === 0 ? "none" : "",
+        position: "relative",
       }}
       whileHover={{ scale: 1.05 }}
       key={itemNo}
       animate={controls}
-      // onTap={() => router.push("/album")}
+      onTap={() => router.push(`/gallery/${formatName(item.name)}`)}
     >
       {item?.imgPath && (
         <Image
@@ -48,6 +53,7 @@ export const Item = ({
           style={{ objectFit: "cover" }}
           alt=""
           loading="eager"
+          priority
         />
       )}
       {item.name && <div className="img-title">{item.name}</div>}
