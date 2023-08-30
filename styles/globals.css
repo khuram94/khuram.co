@@ -155,6 +155,18 @@ body {
   aspect-ratio: 1;
 }
 
+.divider {
+  width: 100%;
+  height: 1px;
+  margin: 10px 8px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(0, 0, 0, 1) 50%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
+
 /* Fonts */
 
 @font-face {

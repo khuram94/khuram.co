@@ -16,8 +16,8 @@ export const AlbumGrid = ({ imageUrls }: TAlbumGridProps) => (
             fill={true}
             style={{ objectFit: "cover" }}
             alt=""
-            sizes="323.34px"
-            loading="eager"
+            sizes="320px 320px"
+            loading="lazy"
           />
         </div>
       ))}

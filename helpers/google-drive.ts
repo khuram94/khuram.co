@@ -74,17 +74,22 @@ export async function authorize() {
  * @param {OAuth2Client} authClient An authorized OAuth2 client.
  */
 
-export async function getGallery(authClient: Auth.OAuth2Client) {
-  const albumFolderId = "1pBrJIArgo1hAeV5lBpGCUioN5oQxOjDa";
-
-  const drive = google.drive({ version: "v3", auth: authClient });
+const getFolders = async (folderId: string, drive: any) => {
   const response = await drive.files.list({
-    q: `'${albumFolderId}' in parents and trashed = false`,
+    q: `'${folderId}' in parents and trashed = false`,
     pageSize: 50,
     fields: "*",
   });
+  return response?.data?.files || [];
+};
 
-  const albumCovers = response.data.files;
+export async function getGallery(authClient: Auth.OAuth2Client) {
+  const albumFolderId = "1pBrJIArgo1hAeV5lBpGCUioN5oQxOjDa";
+  const drive = google.drive({ version: "v3", auth: authClient });
+
+  const albumCovers = await getFolders(albumFolderId, drive);
+
+  console.log({ albumCovers });
 
   if (albumCovers.length === 0) {
     console.log("No album covers found.");
@@ -108,23 +113,18 @@ export async function getAlbum(
   const folderId = "13pCo-sN-A5EVKYkEFi6MquPJwUyGUCdY";
   const drive = google.drive({ version: "v3", auth: authClient });
 
-  const folders: TFolders = await drive.files
-    .list({
-      q: `'${folderId}' in parents and trashed = false`,
-      pageSize: 50,
-      fields: "nextPageToken, files(id, name, webViewLink, mimeType)",
-    })
-    .then(async (response: any) => {
-      const folders: any = [];
-      response.data.files.forEach(
-        (file: any) =>
-          file.mimeType.endsWith("folder") &&
-          folders.push({ id: file.id, name: file.name })
-      );
-      return folders;
-    });
+  const folders = await getFolders(folderId, drive);
 
-  const albumFolder = folders.find((folder) => folder.name === folderName);
+  console.log({ folders });
+  const folda: Array<any> = [];
+
+  folders.forEach(
+    (file: any) =>
+      file.mimeType.endsWith("folder") &&
+      folda.push({ id: file.id, name: file.name })
+  );
+
+  const albumFolder = folda.find((folder) => folder.name === folderName);
 
   if (!albumFolder?.id) {
     return [];
@@ -132,7 +132,7 @@ export async function getAlbum(
 
   const response = await drive.files.list({
     q: `'${albumFolder?.id}' in parents and trashed = false`,
-    pageSize: 50,
+    pageSize: 100,
     fields: "*",
   });
 

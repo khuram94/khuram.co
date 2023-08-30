@@ -32,7 +32,7 @@ export default function Album({
       </Head>
       <main
         style={{
-          height: "100dvh",
+          height: "100%",
           background:
             "linear-gradient(0deg, rgba(0,0,0,1) 1%, rgba(29,29,29,1) 50%, rgba(0,0,0,1) 99%)",
           display: "flex",
@@ -41,6 +41,7 @@ export default function Album({
         }}
       >
         <h1 className="heading">{heading}</h1>
+        <div className="divider" />
         <AlbumGrid imageUrls={imageUrls} />
       </main>
     </>
@@ -68,7 +69,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     .catch(console.error);
 
   const imageUrls = imageIds?.map(
-    (img: any) => "https://drive.google.com/uc?export=view&id=" + img.imgPath
+    (img: any) => `https://drive.google.com/uc?export=view&id=${img.imgPath}`
   );
 
   if (imageUrls.length === 0) {
