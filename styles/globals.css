@@ -122,6 +122,52 @@ body {
   }
 }
 
+/* Album */
+
+.album-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+  @media (max-width: 600px) {
+    margin-top: 20px;
+  }
+}
+
+.album-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  width: 1200px;
+  align-self: center;
+
+  @media (max-width: 975px) {
+    width: 100vw;
+    align-self: unset;
+  }
+}
+
+.album-item {
+  border: 30px solid rgba(0, 0, 0, 0);
+  position: relative;
+  @media (max-width: 975px) {
+    border: 1px solid rgba(0, 0, 0, 0.8);
+  }
+  aspect-ratio: 1;
+}
+
+.divider {
+  width: 100%;
+  min-height: 1px;
+  margin: 10px 8px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(0, 0, 0, 1) 50%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
+
+/* Fonts */
+
 @font-face {
   font-family: "YesYesNo";
   src: local("YesYesNo"), url(../fonts/YesYesNo.ttf.woff) format("woff");
