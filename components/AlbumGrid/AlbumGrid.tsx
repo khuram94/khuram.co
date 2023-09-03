@@ -46,7 +46,7 @@ export const AlbumGrid = ({ images }: TAlbumGridProps) => {
           <div className="album-item" key={index} id={`image-${index}`}>
             <Image
               className="gradient-background"
-              loader={() => `${url}`}
+              loader={() => `${url}?w=2000&h=2000`}
               src={`${url}?w=1000&h=1000`}
               fill={true}
               style={{ objectFit: "cover", borderRadius: "1.5rem" }}

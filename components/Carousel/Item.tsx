@@ -41,7 +41,7 @@ export const Item = ({
       {item?.url && (
         <Image
           className="gradient-background"
-          loader={() => item.url}
+          loader={() => `${item.url}?w=2000&h=2000`}
           src={item.url}
           fill={true}
           style={{ objectFit: "cover" }}
