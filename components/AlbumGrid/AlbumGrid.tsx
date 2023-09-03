@@ -1,26 +1,66 @@
 import Image from "next/image";
+import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { TAlbum } from "@/types/album";
 
 type TAlbumGridProps = {
-  imageUrls: Array<string>;
+  images: TAlbum;
 };
 
-export const AlbumGrid = ({ imageUrls }: TAlbumGridProps) => (
-  <div className="album-container">
-    <div className="album-grid">
-      {imageUrls.map((imageUrl, index) => (
-        <div className="album-item" key={index}>
-          <Image
-            className="gradient-background"
-            loader={() => imageUrl}
-            src={imageUrl}
-            fill={true}
-            style={{ objectFit: "cover" }}
-            alt=""
-            sizes="320px 320px"
-            loading="lazy"
-          />
-        </div>
-      ))}
+type TView = {
+  listView?: boolean;
+};
+
+const View = styled.div<TView>`
+  display: grid;
+  grid-template-columns: ${(props: any) =>
+    props.listView ? "unset" : "auto auto auto"};
+
+  width: 975px;
+  align-self: center;
+
+  @media (max-width: 975px) {
+    width: 100vw;
+    align-self: unset;
+  }
+`;
+
+export const AlbumGrid = ({ images }: TAlbumGridProps) => {
+  const [listView, setListView] = useState(false);
+  const [clickedImage, setClickedImage] = useState<string | undefined>();
+
+  useEffect(() => {
+    clickedImage &&
+      document?.getElementById(clickedImage)?.scrollIntoView({
+        behavior: "auto",
+        block: "center",
+        inline: "center",
+      });
+    setClickedImage(undefined);
+  }, [listView, clickedImage]);
+
+  return (
+    <div className="album-container">
+      <View listView={listView}>
+        {images.map(({ url }: any, index: number) => (
+          <div className="album-item" key={index} id={`image-${index}`}>
+            <Image
+              className="gradient-background"
+              loader={() => `${url}`}
+              src={`${url}?w=1000&h=1000`}
+              fill={true}
+              style={{ objectFit: "cover", borderRadius: "1.5rem" }}
+              alt=""
+              sizes="320px 320px"
+              loading="lazy"
+              onClick={() => {
+                setClickedImage(`image-${index}`);
+                setListView(!listView);
+              }}
+            />
+          </div>
+        ))}
+      </View>
     </div>
-  </div>
-);
+  );
+};

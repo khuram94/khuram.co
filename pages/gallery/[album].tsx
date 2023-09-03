@@ -5,7 +5,8 @@ import { InferGetStaticPropsType } from "next";
 import { ParsedUrlQuery } from "querystring";
 
 import { AlbumGrid } from "@/components";
-import { authorize, getAlbum } from "@/helpers/google-drive";
+import { getAlbum } from "@/utils/content/get-images";
+import { TAlbum } from "@/types/album";
 
 const capitaliseFirstChar = (word: string | undefined) => {
   if (word) {
@@ -19,7 +20,7 @@ const capitaliseFirstChar = (word: string | undefined) => {
 };
 
 export default function Album({
-  imageUrls,
+  images,
   heading,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
@@ -32,7 +33,7 @@ export default function Album({
       </Head>
       <main
         style={{
-          height: "100%",
+          height: "100vh",
           background:
             "linear-gradient(0deg, rgba(0,0,0,1) 1%, rgba(29,29,29,1) 50%, rgba(0,0,0,1) 99%)",
           display: "flex",
@@ -42,7 +43,7 @@ export default function Album({
       >
         <h1 className="heading">{heading}</h1>
         <div className="divider" />
-        <AlbumGrid imageUrls={imageUrls} />
+        <AlbumGrid images={images} />
       </main>
     </>
   );
@@ -53,9 +54,7 @@ type TParams = ParsedUrlQuery & { album?: string };
 export const getStaticProps: GetStaticProps = async (context) => {
   const { album }: TParams = context.params as TParams;
 
-  const folderName = capitaliseFirstChar(album);
-
-  if (!folderName) {
+  if (!album) {
     return {
       redirect: {
         destination: "/gallery",
@@ -64,15 +63,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
   }
 
-  const imageIds = await authorize()
-    .then(async (authClient) => await getAlbum(authClient, folderName))
-    .catch(console.error);
+  const images = (await getAlbum(album)) as TAlbum;
 
-  const imageUrls = imageIds?.map(
-    (img: any) => `https://drive.google.com/uc?export=view&id=${img.imgPath}`
-  );
-
-  if (imageUrls.length === 0) {
+  if (images.length === 0) {
     return {
       redirect: {
         destination: "/gallery",
@@ -80,9 +73,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
       },
     };
   }
+
+  const heading = capitaliseFirstChar(album);
 
   return {
-    props: { imageUrls: imageUrls || [], heading: folderName },
+    props: { images: images || [], heading },
   };
 };
 

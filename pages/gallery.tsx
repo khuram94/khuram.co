@@ -2,12 +2,12 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { GetStaticProps } from "next";
 import { InferGetStaticPropsType } from "next";
-import { authorize, getGallery } from "@/helpers/google-drive";
 import { Carousel } from "@/components/Carousel";
-import { AnimatePresence, motion } from "framer-motion";
+import { getAlbum } from "@/utils/content/get-images";
+import { TAlbum } from "@/types/album";
 
 export default function Gallery({
-  albums,
+  images,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [mediaQuery, setMediaQuery] = useState<MediaQueryList>();
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function Gallery({
           }}
         >
           {mediaQuery && (
-            <Carousel items={albums} isMobile={mediaQuery.matches} />
+            <Carousel items={images} isMobile={mediaQuery.matches} />
           )}
         </div>
       </main>
@@ -51,10 +51,8 @@ export default function Gallery({
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const albums = await authorize()
-    .then(async (authClient) => await getGallery(authClient))
-    .catch(console.error);
+  const images = (await getAlbum("gallery")) as TAlbum;
   return {
-    props: { albums },
+    props: { images },
   };
 };

@@ -2,12 +2,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { useAnimation, useTransform, motion } from "framer-motion";
 
-const formatName = (name: string) => {
-  return name.replace(" ", "-").toLowerCase();
-};
-
 export const Item = ({
-  itemRef,
   itemNo,
   item,
   margins,
@@ -18,7 +13,6 @@ export const Item = ({
 }: any) => {
   const router = useRouter();
   const controls = useAnimation();
-  const imageurl = `https://drive.google.com/uc?export=view&id=${item.imgPath}`;
 
   const getRange = () => {
     const values = range.slice(itemNo, itemNo + 5);
@@ -42,13 +36,13 @@ export const Item = ({
       whileHover={{ scale: 1.05 }}
       key={itemNo}
       animate={controls}
-      onTap={() => router.push(`/gallery/${formatName(item.name)}`)}
+      onTap={() => router.push(`/gallery/${item.location.toLowerCase()}`)}
     >
-      {item?.imgPath && (
+      {item?.url && (
         <Image
           className="gradient-background"
-          loader={() => imageurl}
-          src={imageurl}
+          loader={() => item.url}
+          src={item.url}
           fill={true}
           style={{ objectFit: "cover" }}
           alt=""
@@ -56,7 +50,7 @@ export const Item = ({
           priority
         />
       )}
-      {item.name && <div className="img-title">{item.name}</div>}
+      {item.location && <div className="img-title">{item.location}</div>}
     </motion.div>
   );
 };
