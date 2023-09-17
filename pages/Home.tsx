@@ -70,11 +70,8 @@ export default function App({}: InferGetStaticPropsType<
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async () => {
   return {
-    redirect: {
-      destination: "/gallery",
-      permanent: false,
-    },
+    props: {},
   };
 };
