@@ -89,8 +89,6 @@ export async function getGallery(authClient: Auth.OAuth2Client) {
 
   const albumCovers = await getFolders(albumFolderId, drive);
 
-  console.log({ albumCovers });
-
   if (albumCovers.length === 0) {
     console.log("No album covers found.");
     return;
@@ -115,7 +113,6 @@ export async function getAlbum(
 
   const folders = await getFolders(folderId, drive);
 
-  console.log({ folders });
   const folda: Array<any> = [];
 
   folders.forEach(

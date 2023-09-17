@@ -41,7 +41,11 @@ export const Carousel = ({ items, isMobile }: TCarouselProps) => {
   const innerCarouselMarginLeft =
     (carouselWidth || 0) / 2 - activeCardSpace / 2;
 
-  useEffect(() => setRange(getRange(boundaries, activeCardSpace)), []);
+  useEffect(
+    () => setRange(getRange(boundaries, activeCardSpace)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeCardSpace]
+  );
 
   useEffect(() => {
     handleTabSelection({ tabControls, boundaries, activeItem });

@@ -1,17 +1,19 @@
 import { createClient } from "contentful";
-import { TAlbum } from "@/types/album";
+import { TPhoto } from "@/types/album";
 
-const fetchImagesByTag = async (tag: string) => {
+const fetchAlbumByTag = async (tag: string) => {
   const client = createClient({
     space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID || "",
     accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN || "",
   });
 
-  const content = await client
+  const album = await client
     .getEntries({ "metadata.tags.sys.id[in]": [tag] })
     .then((entries) => entries?.items?.[0]?.fields);
 
-  return content?.images;
+  const spotifyTrackId = album?.spotifyTrackId || "";
+
+  return { spotifyTrackId, images: album?.images };
 };
 
 type TTag = {
@@ -32,18 +34,25 @@ const formatTags = (metadata: any) => {
   };
 };
 
-export const getAlbum = async (tag: string) => {
-  const images = (await fetchImagesByTag(tag)) as any[];
+type TAlbumContent = {
+  spotifyTrackId: string;
+  images: any[];
+};
 
-  const album: TAlbum = [];
+export const getAlbum = async (tag: string) => {
+  const { spotifyTrackId, images } = (await fetchAlbumByTag(
+    tag
+  )) as TAlbumContent;
+
+  const photos: Array<TPhoto> = [];
   images?.forEach(({ metadata, fields }) => {
     const url = fields?.file?.url;
 
     const { location, tags } = formatTags(metadata);
     if (url) {
-      album.push({ location, url, tags });
+      photos.push({ location, url, tags });
     }
   });
 
-  return album;
+  return { spotifyTrackId, photos };
 };

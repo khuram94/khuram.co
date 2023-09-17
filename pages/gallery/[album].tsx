@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable @next/next/no-html-link-for-pages */
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { GetStaticProps, GetStaticPaths } from "next";
 import { InferGetStaticPropsType } from "next";
@@ -7,6 +8,14 @@ import { ParsedUrlQuery } from "querystring";
 import { AlbumGrid } from "@/components";
 import { getAlbum } from "@/utils/content/get-images";
 import { TAlbum } from "@/types/album";
+import Image from "next/image";
+
+declare global {
+  interface Window {
+    onSpotifyIframeApiReady: any;
+    SpotifyController: any;
+  }
+}
 
 const capitaliseFirstChar = (word: string | undefined) => {
   if (word) {
@@ -20,9 +29,41 @@ const capitaliseFirstChar = (word: string | undefined) => {
 };
 
 export default function Album({
-  images,
+  album,
   heading,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const [spotify, setSpotify] = useState<any>(undefined);
+
+  useEffect(() => {
+    const compactView = window.matchMedia("(max-height: 660px)").matches;
+
+    const script = document.createElement("script");
+    script.id = "spotifyIframe";
+    script.src = "https://open.spotify.com/embed-podcast/iframe-api/v1";
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    window.onSpotifyIframeApiReady = (IFrameAPI: any) => {
+      const element = document.getElementById("embed-iframe");
+      const options = {
+        width: "100%",
+        height: compactView ? "100" : "152",
+        uri: `spotify:track:${album?.spotifyTrackId}`,
+      };
+
+      const callback = (EmbedController: any) => {
+        setSpotify(EmbedController);
+      };
+
+      IFrameAPI.createController(element, options, callback);
+    };
+  }, [album?.spotifyTrackId]);
+
+  useEffect(() => {
+    spotify?.togglePlay();
+  }, [spotify]);
+
   return (
     <>
       <Head>
@@ -34,16 +75,54 @@ export default function Album({
       <main
         style={{
           height: "100vh",
-          background:
-            "linear-gradient(0deg, rgba(0,0,0,1) 1%, rgba(29,29,29,1) 50%, rgba(0,0,0,1) 99%)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
-        <h1 className="heading">{heading}</h1>
-        <div className="divider" />
-        <AlbumGrid images={images} />
+        <div
+          style={{
+            paddingTop: "20px",
+            maxWidth: "945px",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            background:
+              "linear-gradient(90deg, rgba(0, 0, 0, 1) 10%, rgba(36, 36, 36, 1) 50%, rgba(0, 0, 0, 1) 90%)",
+          }}
+        >
+          {/* <div style={{ display: "flex", width: "100%", height: "400px" }}>
+            <div className="ball">
+              <span className="shadow"></span>
+            </div>
+          </div> */}
+
+          <a
+            style={{
+              width: "fit-content",
+              alignSelf: "center",
+              margin: "0 20px 20px",
+            }}
+            className="easeIn"
+            href="/gallery"
+          >
+            <Image
+              loading="eager"
+              src="/gallery-icon.png"
+              alt="Dev stuff. Find out what I can do."
+              width="40"
+              height="80"
+              style={{ objectFit: "contain" }}
+            />
+          </a>
+          <span className="heading easeIn">{heading}</span>
+
+          <div className="album-spotify-iframe easeIn">
+            <div id="embed-iframe" />
+          </div>
+
+          <AlbumGrid images={album?.images} />
+        </div>
       </main>
     </>
   );
@@ -63,9 +142,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
   }
 
-  const images = (await getAlbum(album)) as TAlbum;
+  const { spotifyTrackId, photos } = (await getAlbum(album)) as TAlbum;
 
-  if (images.length === 0) {
+  if (photos.length === 0) {
     return {
       redirect: {
         destination: "/gallery",
@@ -77,7 +156,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const heading = capitaliseFirstChar(album);
 
   return {
-    props: { images: images || [], heading },
+    props: { album: { spotifyTrackId, images: photos } || [], heading },
   };
 };
 
