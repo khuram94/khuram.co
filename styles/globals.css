@@ -4,6 +4,54 @@ body {
   overflow-x: hidden;
 }
 
+.ball {
+  filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  background: black;
+  margin: 0;
+  border-radius: 50%;
+  height: 10dvh;
+  width: 60dvw;
+  background: radial-gradient(circle at 100px 100px, #5cabff, #000);
+}
+.ball .shadow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0.4),
+    rgba(0, 0, 0, 0.1) 40%,
+    rgba(0, 0, 0, 0) 50%
+  );
+  -webkit-transform: rotateX(90deg) translateZ(-150px);
+  -moz-transform: rotateX(90deg) translateZ(-150px);
+  -ms-transform: rotateX(90deg) translateZ(-150px);
+  -o-transform: rotateX(90deg) translateZ(-150px);
+  transform: rotateX(90deg) translateZ(-150px);
+  z-index: -1;
+}
+
+.main-wrapper {
+  padding-top: 45px;
+  align-items: center;
+  display: flex;
+  height: 100%;
+  margin: 0 auto;
+  justify-content: center;
+  position: relative;
+  width: 80%;
+  z-index: 1;
+}
+
+.test {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
 .item {
   display: flex;
   flex-direction: column;
@@ -60,15 +108,55 @@ body {
   color: white;
   font-family: "SaxMono";
   text-align: center;
-  width: 100vw;
-  margin-top: 28px;
-  margin-bottom: 12px;
-  margin-left: 4px;
-  margin-right: 4px;
-  animation: 1.5s ease 1s normal both 1 fadeIn;
+  margin: 0 20px 40px;
   @media (max-width: 820px) {
-    font-size: 30px;
-    margin-top: 24px;
+    font-size: 40px;
+    margin: 0 8px 20px;
+  }
+}
+
+.easeIn {
+  animation: 1.5s ease 1s normal both 1 fadeIn;
+}
+
+.line-1 {
+  color: white;
+  font-family: "SaxMono";
+  top: 50%;
+  width: 100%;
+  margin: 0 auto;
+  border-right: 2px solid rgba(255, 255, 255, 0);
+  font-size: 68px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+
+  @media (max-width: 820px) {
+    font-size: 32px;
+    /* margin: 0 8px 20px; */
+  }
+}
+
+/* Animation */
+.anim-typewriter {
+  animation: typewriter 2s steps(20) 1s 1 normal both,
+    blinkTextCursor 500ms steps(20) 15 normal;
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes blinkTextCursor {
+  from {
+    border-right-color: rgba(255, 255, 255, 0.75);
+  }
+  to {
+    border-right-color: transparent;
   }
 }
 
@@ -124,12 +212,42 @@ body {
 
 /* Album */
 
+.album-banner {
+  padding: 20px 80px 0;
+  background: radial-gradient(
+    circle at 50% 150%,
+    rgba(29, 29, 29, 1) 0%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
+
+.album-heading {
+  margin: 0 8px;
+  font-size: 68px;
+  color: white;
+  font-family: "SaxMono";
+  text-align: center;
+  width: 100vw;
+  padding-top: 28px;
+  padding-bottom: 10px;
+}
+
+.album-spotify-iframe {
+  display: flex;
+  justify-content: center;
+  margin: 0 30px 30px;
+  @media (max-width: 600px) {
+    margin: 0 12px;
+  }
+}
+
 .album-container {
   display: flex;
   flex-direction: column;
-  margin-top: 50px;
+  padding-top: 50px;
+  width: 100%;
   @media (max-width: 600px) {
-    margin-top: 20px;
+    padding-top: 20px;
   }
 }
 
@@ -145,24 +263,46 @@ body {
   }
 }
 
-.album-item {
-  border: 30px solid rgba(0, 0, 0, 0);
-  position: relative;
+.album-img {
+  transform: scale(0.5);
+  animation: scaleUp 5s ease-in-out forwards;
+  object-fit: cover;
+  /* border-radius: 1rem; */
+  transition: transform 0.2s;
   @media (max-width: 975px) {
-    border: 1px solid rgba(0, 0, 0, 0.8);
+    border-radius: unset;
   }
-  aspect-ratio: 1;
+  /* @media (max-width: 600px) {
+    transition: none;
+    transform: none;
+    animation: none;
+  } */
+}
+
+.img-container {
+  transition: transform 0.2s;
+  @media (max-width: 600px) {
+    border-radius: unset;
+    transition: none;
+  }
+}
+
+.img-container:hover {
+  transform: scale(1.1);
+  @media (max-width: 600px) {
+    transform: none;
+  }
 }
 
 .divider {
   width: 100%;
   min-height: 1px;
-  margin: 10px 8px;
+  margin: 0 8px;
   background: radial-gradient(
     circle,
     rgba(255, 255, 255, 1) 0%,
-    rgba(0, 0, 0, 1) 50%,
-    rgba(0, 0, 0, 1) 100%
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0) 100%
   );
 }
 
@@ -180,4 +320,15 @@ body {
   src: local("SaxMono"), url(../fonts/saxmono.woff) format("woff");
   font-weight: normal;
   font-style: normal;
+}
+
+@keyframes scaleUp {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
 }

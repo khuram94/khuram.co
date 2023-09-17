@@ -15,7 +15,7 @@ export const Tabs = ({ items, activeItem, setActiveItem }: any) => (
       >
         <div
           style={{
-            height: "1.5px",
+            height: "3px",
             backgroundColor: "white",
             opacity: activeItem === i ? "100%" : "35%",
             borderRadius: "3px",

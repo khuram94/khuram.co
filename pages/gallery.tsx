@@ -10,9 +10,12 @@ export default function Gallery({
   images,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [mediaQuery, setMediaQuery] = useState<MediaQueryList>();
+  const [xsMobile, setXsMobile] = useState<MediaQueryList>();
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 450px)");
+    const xsMobile = window.matchMedia("(max-width: 370px)");
     setMediaQuery(mediaQuery);
+    setXsMobile(xsMobile);
   }, []);
 
   return (
@@ -31,7 +34,20 @@ export default function Gallery({
           flexDirection: "column",
         }}
       >
-        <h1 className="heading">THE LENS. WORLDWIDE.</h1>
+        <div
+          style={{
+            display: "flex",
+            width: "fit-content",
+            alignSelf: "center",
+            marginTop: "30px",
+          }}
+        >
+          {xsMobile?.matches ? (
+            <span className="heading easeIn">THE LENS. WORLDWIDE.</span>
+          ) : (
+            <p className="line-1 anim-typewriter">THE LENS. WORLDWIDE.</p>
+          )}
+        </div>
         <div
           style={{
             display: "flex",
@@ -51,8 +67,8 @@ export default function Gallery({
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const images = (await getAlbum("gallery")) as TAlbum;
+  const { photos } = (await getAlbum("gallery")) as TAlbum;
   return {
-    props: { images },
+    props: { images: photos },
   };
 };

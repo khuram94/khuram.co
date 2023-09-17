@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import { GetStaticProps } from "next";
@@ -31,6 +32,9 @@ export default function App({}: InferGetStaticPropsType<
 >) {
   const router = useRouter();
 
+  useEffect(() => {
+    router.push("/gallery");
+  }, [router]);
   return (
     <>
       <Head>
@@ -40,52 +44,33 @@ export default function App({}: InferGetStaticPropsType<
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Container>
-          <Tile color="#44CBB2">
-            <Image
-              loading="eager"
-              src="/dev-logo.png"
-              alt="Dev stuff. Find out what I can do."
-              fill
-              style={{ objectFit: "contain" }}
-            />
-          </Tile>
-          <Tile color="#F4D502">
-            <Image
-              loading="eager"
-              src="/playlists-logo.png"
-              alt="Playlists. All the vibes."
-              fill
-              style={{ objectFit: "contain" }}
-            />
-          </Tile>
-          <Tile color="#EFEFEF" onClick={() => router.push("/gallery")}>
-            <Image
-              loading="eager"
-              src="/photography-logo.png"
-              alt="Lights. Camera. Action. Take a look through my lens."
-              fill
-              style={{ objectFit: "contain" }}
-            />
-          </Tile>
-          <Tile color="#DC1A21">
-            <Image
-              loading="eager"
-              src="/cooking-logo.png"
-              alt="K's Cuisine. Or a recipe for disaster."
-              fill
-              style={{ objectFit: "contain" }}
-            />
-          </Tile>
-        </Container>
-
-        {/* <video src={"/logo.mp4"} autoPlay loop style={{ width: '500px', height: '500px' }} /> */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            height: "100dvh",
+            background:
+              "linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(29, 29, 29, 1) 50%, rgba(0, 0, 0, 1) 100%)",
+            alignItems: "center",
+          }}
+        >
+          {/* <p className="line-1 anim-typewriter-home">
+            Khuram.co. More to come.
+          </p> */}
+        </div>
+        <video
+          src={"/logo.mp4"}
+          autoPlay
+          loop
+          style={{ width: "500px", height: "500px" }}
+        />
       </main>
     </>
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {},
   };
