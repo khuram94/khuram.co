@@ -43,9 +43,9 @@ export default function Gallery({
           }}
         >
           {xsMobile?.matches ? (
-            <span className="heading easeIn">THE LENS. WORLDWIDE.</span>
+            <span className="heading easeIn">KHURAM.CO</span>
           ) : (
-            <p className="line-1 anim-typewriter">THE LENS. WORLDWIDE.</p>
+            <p className="line-1 anim-typewriter">KHURAM.CO</p>
           )}
         </div>
         <div
