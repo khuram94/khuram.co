@@ -29,5 +29,8 @@
   },
   "devDependencies": {
     "@types/styled-components": "^5.1.26"
+  },
+  "overrides": {
+    "@types/react": "18.0.33"
   }
 }
